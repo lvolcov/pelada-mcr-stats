@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+.vite/
+
+# Playwright
+test-results/
+playwright-report/
+frontend/tests/.cache/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Backups of the workbook (keep the canonical one tracked)
+data/*.bak
+~$*.xlsx

@@ -1,0 +1,25 @@
+# Pelada MCR Stats — full stack.
+# Drop a new workbook into ./data to refresh the site (read on next request).
+
+services:
+  backend:
+    build: ./backend
+    container_name: pelada-backend
+    restart: unless-stopped
+    environment:
+      WORKBOOK_PATH: /data/Football_Player_Match_and_Totals.xlsx
+    volumes:
+      # Read-only mount of the data folder — replace the .xlsx here to update.
+      - ./data:/data:ro
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    container_name: pelada-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      # Host port 8095 -> nginx :80. Visit http://localhost:8095
+      - "8095:80"
