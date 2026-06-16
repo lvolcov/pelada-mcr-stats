@@ -6,7 +6,26 @@ site refreshes automatically.
 
 **Stack:** FastAPI (Python) backend · React + Vite + Tailwind frontend · nginx · Docker Compose
 
+**🌐 Live:** https://lvolcov.github.io/pelada-mcr-stats/
+
 ![status](https://img.shields.io/badge/status-live-039855) ![tests](https://img.shields.io/badge/tests-passing-039855)
+
+## Hosting
+
+The site runs in two ways from the same codebase:
+
+- **GitHub Pages (no server)** — a GitHub Actions workflow pre-renders the stats to
+  static JSON and deploys the built site on every push to `main`. This is the public
+  link above. No hosting cost, no backend to run.
+- **Docker (local / self-hosted)** — the live FastAPI backend parses the workbook on
+  each request. Useful for local development or a private LAN deploy.
+
+### Updating the data after a game (Pages)
+
+1. Replace `data/Football_Player_Match_and_Totals.xlsx` with the new file — either
+   commit & push it, **or** drag-and-drop it in the GitHub web UI
+   (repo → `data` → the file → *Edit* → upload → *Commit*).
+2. The deploy workflow runs automatically and the site updates in ~1–2 minutes.
 
 ---
 
@@ -38,13 +57,15 @@ To change the host port, edit the `ports` mapping for the `frontend` service in
 
 ## Updating the data after a game
 
-The workbook lives in `./data/Football_Player_Match_and_Totals.xlsx` and is mounted
-into the backend read-only. To refresh the site:
+This section applies to the **Docker** deployment. The workbook lives in
+`./data/Football_Player_Match_and_Totals.xlsx` and is mounted into the backend
+read-only. To refresh the site:
 
 1. Replace `data/Football_Player_Match_and_Totals.xlsx` with the new file (same name).
 2. Reload the page — stats are recomputed on the next request.
 
 Keep the sheet/column layout intact (see **Data model** below).
+(For the GitHub Pages flow, see **Hosting** near the top.)
 
 ---
 
