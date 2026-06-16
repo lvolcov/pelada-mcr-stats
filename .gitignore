@@ -10,6 +10,9 @@ node_modules/
 frontend/dist/
 .vite/
 
+# Generated static JSON (rebuilt by CI / generate_static.py)
+frontend/public/data/
+
 # Playwright
 test-results/
 playwright-report/

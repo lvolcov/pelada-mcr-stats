@@ -1,10 +1,18 @@
-// Thin API client. All requests are same-origin /api/* (nginx proxies to backend
-// in production; Vite proxies in dev).
+// API client. Works in two modes, chosen at build time:
+//   - API mode (default, Docker): fetches the live FastAPI backend at /api/*.
+//   - Static mode (GitHub Pages): fetches pre-generated JSON under <base>/data/*.json.
+// Set VITE_STATIC=true at build time to use static mode.
 
-const BASE = "/api";
+const STATIC = import.meta.env.VITE_STATIC === "true";
+const BASE = import.meta.env.BASE_URL; // "/" in dev/Docker, "/<repo>/" on Pages
+
+function url(path) {
+  if (STATIC) return `${BASE}data${path}.json`;
+  return `/api${path}`;
+}
 
 async function get(path) {
-  const res = await fetch(`${BASE}${path}`);
+  const res = await fetch(url(path));
   if (!res.ok) {
     let detail = `${res.status} ${res.statusText}`;
     try {
