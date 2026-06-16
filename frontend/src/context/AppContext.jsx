@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { dict, interpolate } from "../lib/i18n";
+import { api } from "../lib/api";
 
 const AppContext = createContext(null);
 
@@ -21,6 +22,18 @@ function getInitialTheme() {
 export function AppProvider({ children }) {
   const [lang, setLang] = useState(getInitialLang);
   const [theme, setTheme] = useState(getInitialTheme);
+  // Mensalistas (fixed weekly spot) — loaded once, used to badge names site-wide.
+  const [mensalistas, setMensalistas] = useState({ set: new Set(), since: {} });
+
+  useEffect(() => {
+    api
+      .mensalistas()
+      .then((data) => {
+        const map = data.map || {};
+        setMensalistas({ set: new Set(Object.keys(map)), since: map });
+      })
+      .catch(() => setMensalistas({ set: new Set(), since: {} }));
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("pelada.lang", lang);
@@ -49,8 +62,10 @@ export function AppProvider({ children }) {
       toggleTheme: () => setTheme((t) => (t === "dark" ? "light" : "dark")),
       t,
       strings,
+      isMensalista: (player) => mensalistas.set.has(player),
+      mensalistaSince: (player) => mensalistas.since[player] || null,
     };
-  }, [lang, theme]);
+  }, [lang, theme, mensalistas]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

@@ -57,7 +57,21 @@ export default function PlayerProfile() {
       <div className="card flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-center">
         <Avatar name={data.name} size="xl" />
         <div className="text-center sm:text-left">
-          <h1 className="font-display text-3xl font-extrabold">{data.name}</h1>
+          <h1 className="inline-flex items-center gap-2 font-display text-3xl font-extrabold">
+            {data.name}
+            {data.is_mensalista && (
+              <span
+                className="text-base text-pitch-600 dark:text-pitch-400"
+                title={
+                  lang === "pt"
+                    ? `Mensalista${data.mensalista_since ? ` desde ${data.mensalista_since}` : ""}`
+                    : `Season member${data.mensalista_since ? ` since ${data.mensalista_since}` : ""}`
+                }
+              >
+                📅
+              </span>
+            )}
+          </h1>
           <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500 sm:justify-start">
             <span>
               {data.games} {t("profile.gamesPlayed").toLowerCase()}

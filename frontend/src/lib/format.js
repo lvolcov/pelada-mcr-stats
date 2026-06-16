@@ -52,6 +52,39 @@ export function avatarColor(name) {
 
 export const medal = (rank) => (rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null);
 
+// Generic client-side sorting hook. Click a column to sort; click again to flip.
+export function useSort(rows, initialKey = null, initialDir = "asc") {
+  const [sortKey, setSortKey] = useState(initialKey);
+  const [sortDir, setSortDir] = useState(initialDir);
+
+  function toggle(key) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      // Sensible default: text ascending, numbers descending.
+      const sample = rows.find((r) => r[key] != null)?.[key];
+      setSortDir(typeof sample === "number" ? "desc" : "asc");
+    }
+  }
+
+  const sorted = (() => {
+    if (!sortKey) return rows;
+    const out = [...rows].sort((a, b) => {
+      const av = a[sortKey];
+      const bv = b[sortKey];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === "number" && typeof bv === "number") return av - bv;
+      return String(av).localeCompare(String(bv), undefined, { numeric: true });
+    });
+    return sortDir === "desc" ? out.reverse() : out;
+  })();
+
+  return { sorted, sortKey, sortDir, toggle };
+}
+
 // Generic data hook with loading/error/refetch.
 export function useApi(fetcher, deps = []) {
   const [data, setData] = useState(null);

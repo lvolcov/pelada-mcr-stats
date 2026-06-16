@@ -1,57 +1,86 @@
+import { useState } from "react";
 import { useApp } from "../context/AppContext";
 import { api } from "../lib/api";
-import { useApi, formatDateShort } from "../lib/format";
-import { Loading, ErrorState, PageHeader, Avatar } from "../components/ui";
+import { useApi, useSort, formatDateShort } from "../lib/format";
+import { Loading, ErrorState, PageHeader, Avatar, MensalistaBadge } from "../components/ui";
 
 export default function Attendance() {
-  const { t, lang } = useApp();
+  const { t, lang, isMensalista } = useApp();
   const { data, error, loading, reload } = useApi(api.attendance);
+  const [onlyMensalistas, setOnlyMensalistas] = useState(false);
+
+  const rows = (data?.players || []).filter((p) =>
+    onlyMensalistas ? isMensalista(p.player) : true
+  );
+  const { sorted, sortKey, sortDir, toggle } = useSort(rows, "attended", "desc");
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
 
+  const SortTh = ({ k, label, className }) => (
+    <th className={className}>
+      <button
+        onClick={() => toggle(k)}
+        className={`inline-flex items-center gap-1 transition hover:text-pitch-600 ${
+          sortKey === k ? "text-pitch-600 dark:text-pitch-400" : ""
+        }`}
+      >
+        {label}
+        <span className="text-[10px] opacity-70">
+          {sortKey === k ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
+        </span>
+      </button>
+    </th>
+  );
+
   return (
     <div>
-      <PageHeader title={t("attendance.title")} subtitle={t("attendance.subtitle")} />
+      <PageHeader title={t("attendance.title")} subtitle={t("attendance.subtitle")}>
+        <button
+          onClick={() => setOnlyMensalistas((v) => !v)}
+          className={`inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-sm font-medium transition ${
+            onlyMensalistas
+              ? "border-pitch-500 bg-pitch-50 text-pitch-700 dark:bg-pitch-900/30 dark:text-pitch-300"
+              : "border-slate-200 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+          }`}
+        >
+          📅 {t("common.mensalistasOnly")}
+        </button>
+      </PageHeader>
       <div className="card overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr>
-              <th className="sticky left-0 z-10 bg-white px-4 py-3 text-left text-xs uppercase tracking-wide text-slate-400 dark:bg-slate-900">
-                {t("common.player")}
-              </th>
+            <tr className="text-xs uppercase tracking-wide text-slate-400">
+              <SortTh
+                k="name"
+                label={t("common.player")}
+                className="sticky left-0 z-10 bg-white px-4 py-3 text-left dark:bg-slate-900"
+              />
               {data.session_dates.map((d) => (
-                <th
-                  key={d}
-                  className="px-1 py-3 text-center text-[10px] font-medium text-slate-400"
-                >
+                <th key={d} className="px-1 py-3 text-center text-[10px] font-medium text-slate-400">
                   {formatDateShort(d, lang)}
                 </th>
               ))}
-              <th className="px-3 py-3 text-right text-xs uppercase tracking-wide text-slate-400">
-                {t("attendance.attended")}
-              </th>
+              <SortTh k="attended" label={t("attendance.attended")} className="px-3 py-3 text-right" />
             </tr>
           </thead>
           <tbody>
-            {data.players.map((p) => (
-              <tr
-                key={p.player}
-                className="border-t border-slate-100 dark:border-slate-800/60"
-              >
+            {sorted.map((p) => (
+              <tr key={p.player} className="border-t border-slate-100 dark:border-slate-800/60">
                 <td className="sticky left-0 z-10 bg-white px-4 py-2 dark:bg-slate-900">
                   <div className="flex items-center gap-2">
                     <Avatar name={p.name} size="sm" to={`/player/${p.player}`} />
-                    <span className="whitespace-nowrap font-medium">{p.name}</span>
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium">
+                      {p.name}
+                      <MensalistaBadge player={p.player} className="text-xs" />
+                    </span>
                   </div>
                 </td>
                 {p.sessions.map((present, i) => (
                   <td key={i} className="px-1 py-2 text-center">
                     <span
                       className={`inline-block h-5 w-5 rounded ${
-                        present
-                          ? "bg-pitch-500"
-                          : "bg-slate-100 dark:bg-slate-800"
+                        present ? "bg-pitch-500" : "bg-slate-100 dark:bg-slate-800"
                       }`}
                       title={present ? "✓" : "—"}
                     />
@@ -59,10 +88,7 @@ export default function Attendance() {
                 ))}
                 <td className="px-3 py-2 text-right">
                   <span className="font-bold tabular-nums">{p.attended}</span>
-                  <span className="text-xs text-slate-400">
-                    {" "}
-                    ({p.attendance_pct}%)
-                  </span>
+                  <span className="text-xs text-slate-400"> ({p.attendance_pct}%)</span>
                 </td>
               </tr>
             ))}

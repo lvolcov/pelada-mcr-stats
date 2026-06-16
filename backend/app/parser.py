@@ -10,6 +10,7 @@ Created: 2026-06-16
 
 from __future__ import annotations
 
+import json
 import threading
 from dataclasses import dataclass, field
 from datetime import date, datetime
@@ -42,6 +43,8 @@ class Dataset:
 
     rows: list[MatchRow] = field(default_factory=list)
     registered_players: list[str] = field(default_factory=list)
+    # player name (lowercase) -> ISO date they became a mensalista (fixed weekly spot)
+    mensalistas: dict[str, str] = field(default_factory=dict)
     source_mtime: float = 0.0
     parsed_at: str = ""
 
@@ -75,8 +78,14 @@ def _norm_score(value) -> str:
 class WorkbookStore:
     """Thread-safe, mtime-cached loader for the workbook."""
 
-    def __init__(self, path: str | Path) -> None:
+    def __init__(self, path: str | Path, mensalistas_path: str | Path | None = None) -> None:
         self._path = Path(path)
+        # Mensalistas registry lives next to the workbook by default.
+        self._mensalistas_path = (
+            Path(mensalistas_path)
+            if mensalistas_path
+            else self._path.parent / "mensalistas.json"
+        )
         self._lock = threading.Lock()
         self._cache: Dataset | None = None
 
@@ -92,11 +101,29 @@ class WorkbookStore:
         if not self._path.exists():
             raise FileNotFoundError(f"Workbook not found at {self._path}")
 
+        # Cache key combines both files' mtimes so editing either refreshes.
         mtime = self._path.stat().st_mtime
+        if self._mensalistas_path.exists():
+            mtime += self._mensalistas_path.stat().st_mtime
         with self._lock:
             if self._cache is None or self._cache.source_mtime != mtime:
                 self._cache = self._parse(mtime)
             return self._cache
+
+    def _load_mensalistas(self) -> dict[str, str]:
+        if not self._mensalistas_path.exists():
+            return {}
+        try:
+            raw = json.loads(self._mensalistas_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            return {}
+        data = raw.get("mensalistas", raw) if isinstance(raw, dict) else {}
+        # Normalise keys to lowercase; drop any metadata keys like "_note".
+        return {
+            str(k).strip().lower(): str(v)
+            for k, v in data.items()
+            if not str(k).startswith("_")
+        }
 
     def _parse(self, mtime: float) -> Dataset:
         wb = openpyxl.load_workbook(self._path, data_only=True, read_only=True)
@@ -134,6 +161,7 @@ class WorkbookStore:
         return Dataset(
             rows=rows,
             registered_players=registered,
+            mensalistas=self._load_mensalistas(),
             source_mtime=mtime,
             parsed_at=datetime.now().isoformat(timespec="seconds"),
         )

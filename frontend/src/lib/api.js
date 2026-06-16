@@ -35,8 +35,10 @@ export const api = {
   form: () => get("/form"),
   seasonTrend: () => get("/season-trend"),
   matches: () => get("/matches"),
+  match: (date) => get(`/matches/${encodeURIComponent(date)}`),
   mvp: () => get("/mvp"),
   attendance: () => get("/attendance"),
+  mensalistas: () => get("/mensalistas"),
   players: () => get("/players"),
   player: (name) => get(`/players/${encodeURIComponent(name)}`),
 };

@@ -19,11 +19,29 @@ def test_all_list_endpoints_ok(client):
         "/api/matches",
         "/api/mvp",
         "/api/attendance",
+        "/api/mensalistas",
         "/api/players",
     ]:
         r = client.get(path)
         assert r.status_code == 200, path
         assert r.json() is not None
+
+
+def test_match_detail_endpoint(client):
+    r = client.get("/api/matches/2026-06-08")
+    assert r.status_code == 200
+    assert r.json()["teams_known"] is True
+
+
+def test_match_detail_missing(client):
+    r = client.get("/api/matches/2099-01-01")
+    assert r.status_code == 404
+
+
+def test_mensalistas_endpoint(client):
+    data = client.get("/api/mensalistas").json()
+    assert len(data["players"]) == 16
+    assert "bruno" in data["map"]
 
 
 def test_player_endpoint(client):

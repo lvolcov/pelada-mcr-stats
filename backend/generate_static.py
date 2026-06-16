@@ -57,6 +57,7 @@ def main() -> None:
         "mvp": stats.mvp(ds),
         "attendance": stats.attendance(ds),
         "players": stats.players_index(ds),
+        "mensalistas": stats.mensalistas_report(ds),
     }
     for name, payload in endpoints.items():
         write_json(out / f"{name}.json", payload)
@@ -66,9 +67,15 @@ def main() -> None:
         profile = stats.player_profile(ds, p["player"])
         write_json(out / "players" / f"{p['player']}.json", profile)
 
+    # Per-match details -> matches/<date>.json
+    match_list = stats.matches(ds)
+    for m in match_list:
+        write_json(out / "matches" / f"{m['date']}.json", stats.match_detail(ds, m["date"]))
+
     print(
         f"Generated {len(endpoints)} endpoint files + "
-        f"{len(endpoints['players'])} player profiles into {out}"
+        f"{len(endpoints['players'])} player profiles + "
+        f"{len(match_list)} match details into {out}"
     )
 
 

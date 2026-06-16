@@ -99,6 +99,19 @@ def get_matches():
     return stats.matches(_ds())
 
 
+@app.get("/api/matches/{date}")
+def get_match(date: str):
+    detail = stats.match_detail(_ds(), date)
+    if detail is None:
+        raise HTTPException(status_code=404, detail=f"No match on {date}.")
+    return detail
+
+
+@app.get("/api/mensalistas")
+def get_mensalistas():
+    return stats.mensalistas_report(_ds())
+
+
 @app.get("/api/mvp")
 def get_mvp():
     return stats.mvp(_ds())

@@ -80,8 +80,25 @@ const RESULT_STYLE = {
   W: "bg-pitch-600 text-white",
   L: "bg-rose-500 text-white",
   D: "bg-slate-400 text-white dark:bg-slate-600",
+  M: "bg-amber-500 text-white",
   "-": "bg-slate-200 text-slate-400 dark:bg-slate-800",
 };
+
+// Calendar badge marking a mensalista (player with a fixed weekly spot).
+export function MensalistaBadge({ player, className = "" }) {
+  const { isMensalista, mensalistaSince, lang } = useApp();
+  if (!isMensalista(player)) return null;
+  const since = mensalistaSince(player);
+  const label =
+    lang === "pt"
+      ? `Mensalista${since ? ` desde ${since}` : ""}`
+      : `Season member${since ? ` since ${since}` : ""}`;
+  return (
+    <span className={`text-pitch-600 dark:text-pitch-400 ${className}`} title={label} aria-label={label}>
+      📅
+    </span>
+  );
+}
 
 export function FormPills({ form }) {
   const { strings } = useApp();
@@ -130,8 +147,9 @@ export function PlayerCell({ name, player, size = "sm" }) {
       className="group inline-flex items-center gap-3"
     >
       <Avatar name={name} size={size} />
-      <span className="font-medium group-hover:text-pitch-600 group-hover:underline">
+      <span className="inline-flex items-center gap-1.5 font-medium group-hover:text-pitch-600 group-hover:underline">
         {name}
+        <MensalistaBadge player={player} className="text-xs" />
       </span>
     </Link>
   );

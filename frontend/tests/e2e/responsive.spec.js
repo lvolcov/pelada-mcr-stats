@@ -82,4 +82,39 @@ test.describe("Dashboard flows", () => {
     // Recharts renders an <svg>; ensure the chart surface is present.
     await expect(page.locator("svg.recharts-surface").first()).toBeVisible();
   });
+
+  test("match history opens a match detail page", async ({ page }) => {
+    await page.goto("/matches");
+    // Open the first match card.
+    await page.locator('a[href*="/match/"]').first().click();
+    await expect(page).toHaveURL(/\/match\/\d{4}-\d{2}-\d{2}$/);
+    // Detail page shows the goals/assists breakdown.
+    await expect(page.getByText(/Vencedores|Winners|Times mistos|Mixed/).first()).toBeVisible();
+  });
+
+  test("matches table view sorts by column", async ({ page }) => {
+    await page.goto("/matches");
+    await page.getByRole("button", { name: /Tabela|Table/ }).click();
+    await expect(page.getByRole("table")).toBeVisible();
+    // Sorting by goals should not throw and keeps the table present.
+    await page.getByRole("button", { name: /Gols|Goals/ }).first().click();
+    await expect(page.getByRole("table")).toBeVisible();
+  });
+
+  test("leaderboard column header sorts", async ({ page }) => {
+    await page.goto("/leaderboard");
+    const assistsHeader = page.getByRole("button", { name: /Assist/ }).first();
+    await assistsHeader.click();
+    // After sorting by assists desc, Douglas B (24 assists) should lead.
+    const firstRow = page.getByRole("row").nth(1);
+    await expect(firstRow.getByText(/Douglas B/)).toBeVisible();
+  });
+
+  test("mensalista calendar icon appears for season members", async ({ page }) => {
+    // Junior is a mensalista; his profile heading should carry the 📅 badge.
+    await page.goto("/player/junior");
+    const heading = page.getByRole("heading", { name: /Junior/ });
+    await expect(heading).toBeVisible();
+    await expect(heading.getByText("📅")).toBeVisible();
+  });
 });

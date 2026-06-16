@@ -46,6 +46,7 @@ export default function ScoringRate() {
         title={t("scoring.title")}
         subtitle={t("scoring.subtitle", { min: data.min_games })}
       />
+      <p className="-mt-3 mb-5 text-xs text-slate-400">ℹ️ {t("common.mixedExcluded")}</p>
       <Section className="mb-6">
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>

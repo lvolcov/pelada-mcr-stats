@@ -8,6 +8,7 @@ import GaRate from "./pages/GaRate";
 import Form from "./pages/Form";
 import SeasonTrend from "./pages/SeasonTrend";
 import Matches from "./pages/Matches";
+import MatchDetail from "./pages/MatchDetail";
 import Mvp from "./pages/Mvp";
 import Attendance from "./pages/Attendance";
 import Players from "./pages/Players";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/form" element={<Form />} />
         <Route path="/trend" element={<SeasonTrend />} />
         <Route path="/matches" element={<Matches />} />
+        <Route path="/match/:date" element={<MatchDetail />} />
         <Route path="/mvp" element={<Mvp />} />
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/players" element={<Players />} />

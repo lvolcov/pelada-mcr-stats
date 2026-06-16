@@ -1,5 +1,10 @@
 # Pelada MCR Stats Website — Project Brief
 
+> **Note:** This is the original scoping document. For the **current, living
+> documentation** of the built system (architecture, hosting, data model, the
+> mixed-match rule, mensalistas, match pages, photos, API and how to update data),
+> see **[README.md](README.md)**.
+
 ## Goal
 
 Build a React web app (Dockerised) that reads the Monday football group's Excel tracking file and presents it as a set of interactive dashboards. The file is the single source of truth; replacing it after each game should refresh all data automatically.
