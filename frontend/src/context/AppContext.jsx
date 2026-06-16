@@ -5,10 +5,11 @@ import { dict, interpolate } from "../lib/i18n";
 
 const AppContext = createContext(null);
 
+// Language is currently locked to Brazilian Portuguese. The full i18n machinery
+// (EN strings, setLang, toggleLang) is kept intact so the toggle can be switched
+// back on later by simply rendering the language button again.
 function getInitialLang() {
-  const saved = localStorage.getItem("pelada.lang");
-  if (saved === "pt" || saved === "en") return saved;
-  return navigator.language?.startsWith("en") ? "en" : "pt";
+  return "pt";
 }
 
 function getInitialTheme() {

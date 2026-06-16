@@ -18,34 +18,37 @@ const NAV = [
   { to: "/players", key: "players", icon: "👥" },
 ];
 
+// Manchester's worker bee — the city's emblem — in Brazilian amber/green tones.
+function BeeLogo({ className = "" }) {
+  return (
+    <span
+      className={`flex items-center justify-center rounded-xl bg-gradient-to-br from-amber-300 to-amber-500 shadow-sm ring-1 ring-amber-600/30 ${className}`}
+    >
+      <span className="text-lg leading-none">🐝</span>
+    </span>
+  );
+}
+
 function Brand() {
   const { t } = useApp();
   return (
     <Link to="/" className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-pitch-600 text-lg shadow-sm">
-        ⚽
-      </span>
+      <BeeLogo className="h-9 w-9" />
       <div className="leading-tight">
         <p className="font-display text-base font-extrabold">{t("appName")}</p>
-        <p className="text-[10px] uppercase tracking-wider text-slate-400">Stats</p>
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-pitch-600 dark:text-pitch-400">
+          🇧🇷 Manchester
+        </p>
       </div>
     </Link>
   );
 }
 
 function Toggles() {
-  const { lang, toggleLang, theme, toggleTheme } = useApp();
+  const { theme, toggleTheme } = useApp();
+  // Language is locked to Portuguese for now, so only the theme toggle is shown.
   return (
     <div className="flex items-center gap-2">
-      <button
-        onClick={toggleLang}
-        aria-label="Toggle language"
-        data-testid="lang-toggle"
-        className="flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 px-3 text-xs font-bold transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
-      >
-        <span>{lang === "pt" ? "🇧🇷" : "🇬🇧"}</span>
-        <span>{lang.toUpperCase()}</span>
-      </button>
       <button
         onClick={toggleTheme}
         aria-label="Toggle theme"
@@ -90,7 +93,7 @@ export default function Layout({ children }) {
         <div className="mt-8 flex-1 overflow-y-auto">
           <NavItems />
         </div>
-        <p className="mt-4 px-3 text-[11px] text-slate-400">⚽ Pelada MCR · 2026</p>
+        <p className="mt-4 px-3 text-[11px] text-slate-400">🐝 Pelada MCR · 2026</p>
       </aside>
 
       {/* Mobile top bar */}

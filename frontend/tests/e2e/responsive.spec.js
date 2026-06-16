@@ -47,21 +47,14 @@ test.describe("App shell & toggles", () => {
     await expect(html).not.toHaveClass(/dark/);
   });
 
-  test("language toggle switches PT <-> EN", async ({ page, isMobile }) => {
+  test("language is locked to Portuguese (no toggle)", async ({ page, isMobile }) => {
     await page.goto("/");
-    // Default is Brazilian Portuguese (locale pinned in config).
+    // The language toggle has been removed.
+    await expect(page.getByTestId("lang-toggle")).toHaveCount(0);
+    // Navigation labels are in Portuguese.
     if (isMobile) await page.getByTestId("menu-button").click();
-    await expect(
-      page.getByRole("link", { name: "Placar Geral" }).first()
-    ).toBeVisible();
-    if (isMobile) await page.getByRole("link", { name: "Placar Geral" }).first().click();
-
-    // Flip language using the visible toggle, then confirm English labels.
-    await page.locator('[data-testid="lang-toggle"]:visible').click();
-    if (isMobile) await page.getByTestId("menu-button").click();
-    await expect(
-      page.getByRole("link", { name: "Leaderboard" }).first()
-    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Placar Geral" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Leaderboard" })).toHaveCount(0);
   });
 });
 

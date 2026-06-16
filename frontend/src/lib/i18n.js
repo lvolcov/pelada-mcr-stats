@@ -5,7 +5,7 @@ export const LANGS = ["pt", "en"];
 export const dict = {
   pt: {
     appName: "Pelada MCR",
-    appTagline: "Estatísticas da pelada de segunda-feira",
+    appTagline: "A pelada brasileira em Manchester 🇧🇷🐝",
     nav: {
       home: "Início",
       leaderboard: "Placar Geral",
@@ -50,7 +50,7 @@ export const dict = {
     home: {
       heroTitle: "A pelada em números",
       heroSubtitle:
-        "Acompanhe gols, assistências, vitórias e muito mais — atualizado a cada segunda.",
+        "Toda segunda a rapaziada brasileira se reúne em Manchester pra bater uma bola. Acompanhe gols, assistências, vitórias e muito mais.",
       totalGoals: "Gols na temporada",
       totalAssists: "Assistências",
       sessions: "Rodadas jogadas",
