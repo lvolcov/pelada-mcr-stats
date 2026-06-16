@@ -16,12 +16,16 @@ export default function Mvp() {
   const { t, lang } = useApp();
   const { data, error, loading, reload } = useApi(api.mvp);
   const [newestFirst, setNewestFirst] = useState(true);
+  // Hooks must run unconditionally — keep useSort above the early returns.
+  const { sorted, sortKey, sortDir, toggle } = useSort(
+    data?.season || [],
+    "mvp_count",
+    "desc"
+  );
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
 
-  // Season ranking is sortable by MVP count or name.
-  const { sorted, sortKey, sortDir, toggle } = useSort(data.season, "mvp_count", "desc");
   const perSession = newestFirst ? data.per_session : [...data.per_session].reverse();
 
   const SortBtn = ({ k, children }) => (

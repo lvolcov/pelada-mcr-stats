@@ -110,6 +110,23 @@ test.describe("Dashboard flows", () => {
     await expect(firstRow.getByText(/Douglas B/)).toBeVisible();
   });
 
+  test("MVP page renders and pluralizes correctly", async ({ page }) => {
+    await page.goto("/mvp");
+    await expect(page.getByText(/Ranking de MVPs|MVP Ranking/).first()).toBeVisible();
+    const body = await page.locator("body").innerText();
+    // Singular must be "1× vez", never "1× vezes".
+    expect(body).not.toContain("1× vezes");
+    expect(body).toContain("1× vez");
+  });
+
+  test("players page sort control works", async ({ page }) => {
+    await page.goto("/players");
+    await expect(page.getByRole("link", { name: /Junior/ }).first()).toBeVisible();
+    // Sorting by goals should not crash the grid.
+    await page.getByRole("button", { name: /Gols|Goals/ }).first().click();
+    await expect(page.getByRole("link", { name: /Junior/ }).first()).toBeVisible();
+  });
+
   test("mensalista calendar icon appears for season members", async ({ page }) => {
     // Junior is a mensalista; his profile heading should carry the 📅 badge.
     await page.goto("/player/junior");
