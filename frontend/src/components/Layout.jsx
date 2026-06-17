@@ -67,6 +67,16 @@ function NavItems({ onNavigate }) {
           {t(`nav.${item.key}`)}
         </NavLink>
       ))}
+      {/* External: World Cup prediction pool (separate app) */}
+      <a
+        href="https://lvolcov.github.io/bolao-da-copa/"
+        onClick={onNavigate}
+        className="nav-link mt-1 border-t border-slate-200 pt-3 dark:border-slate-800"
+      >
+        <span className="w-5 text-center text-base">⚽</span>
+        {t("nav.bolao")}
+        <span className="ml-auto text-xs text-slate-400">↗</span>
+      </a>
     </nav>
   );
 }

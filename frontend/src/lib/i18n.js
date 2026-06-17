@@ -18,6 +18,7 @@ export const dict = {
       mvp: "MVP por Rodada",
       attendance: "Presença",
       players: "Jogadores",
+      bolao: "Bolão da Copa",
     },
     common: {
       loading: "Carregando…",
@@ -170,6 +171,7 @@ export const dict = {
       mvp: "Match MVP",
       attendance: "Attendance",
       players: "Players",
+      bolao: "World Cup Pool",
     },
     common: {
       loading: "Loading…",
