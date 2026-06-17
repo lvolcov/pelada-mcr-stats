@@ -82,39 +82,39 @@ function MatchNav({ list, date }) {
 
   return (
     <nav className="flex gap-3">
-      {older ? (
-        <Link to={`/match/${older.date}`} className={linkClass} rel="prev">
-          <span aria-hidden>←</span>
-          <span className="truncate">
-            <span className="block text-xs uppercase tracking-wide text-slate-400">
-              {t("match.prev")}
-            </span>
-            {formatDate(older.date, lang)}
-          </span>
-        </Link>
-      ) : (
-        <span className={disabledClass} aria-disabled="true">
-          <span aria-hidden>←</span>
-          <span className="text-xs uppercase tracking-wide">{t("match.prev")}</span>
-        </span>
-      )}
       {newer ? (
-        <Link
-          to={`/match/${newer.date}`}
-          className={`${linkClass} justify-end text-right`}
-          rel="next"
-        >
+        <Link to={`/match/${newer.date}`} className={linkClass} rel="next">
+          <span aria-hidden>←</span>
           <span className="truncate">
             <span className="block text-xs uppercase tracking-wide text-slate-400">
               {t("match.next")}
             </span>
             {formatDate(newer.date, lang)}
           </span>
+        </Link>
+      ) : (
+        <span className={disabledClass} aria-disabled="true">
+          <span aria-hidden>←</span>
+          <span className="text-xs uppercase tracking-wide">{t("match.next")}</span>
+        </span>
+      )}
+      {older ? (
+        <Link
+          to={`/match/${older.date}`}
+          className={`${linkClass} justify-end text-right`}
+          rel="prev"
+        >
+          <span className="truncate">
+            <span className="block text-xs uppercase tracking-wide text-slate-400">
+              {t("match.prev")}
+            </span>
+            {formatDate(older.date, lang)}
+          </span>
           <span aria-hidden>→</span>
         </Link>
       ) : (
         <span className={`${disabledClass} justify-end text-right`} aria-disabled="true">
-          <span className="text-xs uppercase tracking-wide">{t("match.next")}</span>
+          <span className="text-xs uppercase tracking-wide">{t("match.prev")}</span>
           <span aria-hidden>→</span>
         </span>
       )}
