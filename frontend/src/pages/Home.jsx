@@ -66,7 +66,7 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <section className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-800 via-pitch-600 to-emerald-500 p-6 text-white shadow-xl sm:p-12">
+      <section className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-800 via-pitch-600 to-emerald-500 p-6 text-white shadow-xl sm:p-8">
         {/* football-pitch motif */}
         <svg
           viewBox="0 0 400 200"
@@ -92,23 +92,15 @@ export default function Home() {
         <Logo className="pointer-events-none absolute -right-3 -top-3 h-24 w-24 opacity-90 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
 
         <div className="relative animate-fade-in">
-          <h1 className="max-w-[15rem] font-display text-lg font-bold leading-snug drop-shadow-sm sm:max-w-md sm:text-2xl">
+          <h1 className="max-w-[14rem] font-display text-xl font-bold leading-snug drop-shadow-sm sm:max-w-sm sm:text-3xl">
             {t("appTagline")}
           </h1>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link
-              to="/leaderboard"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-pitch-700 shadow-lg shadow-emerald-950/30 transition hover:bg-pitch-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              {t("home.explore")} →
-            </Link>
-            <Link
-              to="/players"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-            >
-              {t("nav.players")}
-            </Link>
-          </div>
+          <Link
+            to="/leaderboard"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-pitch-700 shadow-lg shadow-emerald-950/30 transition hover:bg-pitch-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            {t("home.explore")} →
+          </Link>
         </div>
       </section>
 
