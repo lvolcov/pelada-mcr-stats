@@ -66,38 +66,27 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <section className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-800 via-pitch-600 to-emerald-500 p-6 text-white shadow-xl sm:p-8">
-        {/* football-pitch motif */}
-        <svg
-          viewBox="0 0 400 200"
-          preserveAspectRatio="xMidYMid slice"
-          className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-white/[0.07]"
-          aria-hidden="true"
-        >
-          <line x1="200" y1="0" x2="200" y2="200" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="200" cy="100" r="46" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="200" cy="100" r="3" fill="currentColor" />
-          <rect x="-1" y="58" width="46" height="84" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <rect x="355" y="58" width="46" height="84" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-        {/* glows */}
-        <div className="pointer-events-none absolute -right-20 -top-24 -z-10 h-64 w-64 rounded-full bg-emerald-300/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 -left-12 -z-10 h-56 w-56 rounded-full bg-amber-300/25 blur-3xl" />
+      <section className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 px-6 py-9 text-center text-white shadow-xl sm:py-12">
+        {/* soft depth glows */}
+        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-40 w-72 -translate-x-1/2 -translate-y-1/3 rounded-full bg-white/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 -left-10 -z-10 h-48 w-48 rounded-full bg-amber-300/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 -right-10 -z-10 h-48 w-48 rounded-full bg-emerald-300/25 blur-3xl" />
 
-        {/* bee with halo */}
-        <div className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 sm:block">
-          <div className="absolute inset-2 rounded-full bg-white/15 blur-2xl" />
-          <Logo className="relative h-44 w-44 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]" />
-        </div>
-        <Logo className="pointer-events-none absolute -right-3 -top-3 h-24 w-24 opacity-90 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
-
-        <div className="relative animate-fade-in">
-          <h1 className="max-w-[14rem] font-display text-xl font-bold leading-snug drop-shadow-sm sm:max-w-sm sm:text-3xl">
-            {t("appTagline")}
+        <div className="relative mx-auto flex max-w-md flex-col items-center animate-fade-in">
+          {/* mascot */}
+          <div className="relative mb-4">
+            <div className="absolute inset-0 -z-10 scale-150 rounded-full bg-white/25 blur-2xl" />
+            <Logo className="h-20 w-20 drop-shadow-[0_8px_22px_rgba(0,0,0,0.4)] sm:h-24 sm:w-24" />
+          </div>
+          <h1 className="font-display text-2xl font-extrabold leading-tight drop-shadow-sm sm:text-4xl">
+            {t("appName")}
           </h1>
+          <p className="mt-2 max-w-xs text-sm font-medium text-pitch-50/95 sm:max-w-sm sm:text-base">
+            {t("appTagline")}
+          </p>
           <Link
             to="/leaderboard"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-pitch-700 shadow-lg shadow-emerald-950/30 transition hover:bg-pitch-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-2.5 text-sm font-bold text-pitch-700 shadow-lg shadow-emerald-950/30 transition hover:bg-pitch-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             {t("home.explore")} →
           </Link>
