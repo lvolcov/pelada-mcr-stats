@@ -46,13 +46,19 @@ The site runs in two ways from the same codebase:
   Driven by an editable `data/mensalistas.json`.
 - **Sortable everywhere** — every table sorts on any column (the active column is
   highlighted and ranks renumber); card/list pages (players, form, MVP) have sort
-  controls; match history has a cards/table toggle.
+  controls plus a **"Padrão" reset** chip to restore the original order; match
+  history has a cards/table toggle.
 - **Clickable match references** — anywhere a match is referenced (attendance
   squares, form pills, MVP-per-round, player game logs, homepage highlights) it's a
   tooltipped link straight to that match's page.
-- **Recent form** is computed over the last 5 *actual* sessions, so players who've
-  stopped showing up drop to the bottom (they're not ranked on an old hot streak).
+- **Recent form** is computed over the last 5 *actual* sessions, with one pill per
+  session: V/E/D for the result and a dashed ✕ for sessions the player missed (so
+  absences are visible, not hidden). Players inactive in the window sort to the bottom.
+- **Player profiles** show goals, assists, win %, goals/game and **attendance (x/y +
+  %)**, plus goal/assist progression and a W/L/D breakdown.
 - **Homepage charts** — top scorers (goals + assists) and a goals-per-session trend.
+- **Installable (PWA)** — a web manifest and a bee-with-football app icon, so the site
+  can be added to a phone's home screen with a proper logo.
 - **Auto-refresh** — the backend re-reads the workbook (and `mensalistas.json`)
   whenever either changes. Replace the file, reload the page — no restart.
 - **Brazilian-Manchester branding** — Manchester worker-bee logo, locked to
@@ -111,7 +117,12 @@ Pelada_MCR_Stats_Website/
 │   │   ├── components/        # Layout, RankTable (sortable), UI primitives
 │   │   ├── context/           # theme + language + mensalistas
 │   │   └── lib/               # api client, i18n, formatters, useSort
-│   ├── public/photos/         # end-of-match photos (<date>.jpg)
+│   ├── public/
+│   │   ├── photos/            # end-of-match photos (<date>.jpg)
+│   │   ├── manifest.webmanifest  # PWA manifest
+│   │   ├── icon-192.png / icon-512.png / apple-touch-icon.png
+│   │   └── 404.html           # SPA deep-link fallback for GitHub Pages
+│   ├── scripts/make_icons.py  # regenerates the app icons (Pillow)
 │   ├── nginx.conf             # serves the SPA, proxies /api to backend
 │   └── tests/e2e/             # Playwright (desktop + mobile UX)
 └── .github/workflows/deploy.yml  # build + deploy to GitHub Pages
@@ -249,8 +260,9 @@ npm run test:e2e
 ```
 
 The Playwright suite runs every test in both a desktop (1280×800) and a mobile
-(Pixel 5) viewport, covering responsive navigation, theme/language toggles, and the
-core dashboard flows.
+(Pixel 5) viewport, covering responsive navigation, the theme toggle, sorting and
+sort-reset, clickable match references, the installable manifest, and the core
+dashboard flows.
 
 ---
 
