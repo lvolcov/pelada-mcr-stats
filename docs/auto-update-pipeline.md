@@ -181,8 +181,9 @@ Bot:  Pushed ✅  Deploy running — live in ~1 min.
 `docker-compose.yml` service (separate from the public web stack, or a new
 file):
 
-- **Container:** Python + `python-telegram-bot` + the repo's tooling
-  (`openpyxl`, `Pillow`) + Claude (CLI or SDK) + `git`.
+- **Container:** Python + `python-telegram-bot` + the repo's tooling (`Pillow`
+  for photo import; CSV append needs only the stdlib) + Claude (CLI or SDK) +
+  `git`.
 - **Volume:** a clone of the repo with push access.
 - **Secrets (env / Docker secrets, never committed):**
   - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ALLOWED_CHAT_IDS`

@@ -43,7 +43,12 @@ columns `date,score,player,goals,assists,win,loss,draw,mixed`
 - **10 dashboards** — leaderboard, win-rate ranking, goals/game, G+A/game, recent form,
   season trend, match history, match MVP, attendance, and per-player profiles.
 - **Per-match pages** (`/match/<date>`) — winners vs losers line-up, goals/assists,
-  the match MVP, and the end-of-match photo when one is available.
+  the match MVP, the end-of-match photo when one is available, and next/previous
+  arrows to step between match days.
+- **Shareable cards ("Modo foto")** — match and player pages have a one-tap photo
+  mode that renders a screenshot-ready card (score/stats + photo, or a player's
+  season summary) and exports it as an image via the native share sheet (WhatsApp,
+  etc.) with a deep link back to the page, or a download on desktop.
 - **Mixed-team days** ("time misto", e.g. the 3-team session on 2026-02-23) count
   **only** towards goals and assists; they're excluded from games played, win/loss
   records, win-rate, rates, form, MVP and attendance. The match still shows in the
