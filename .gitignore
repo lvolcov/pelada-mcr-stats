@@ -27,3 +27,6 @@ frontend/tests/.cache/
 # Backups of the workbook (keep the canonical one tracked)
 data/*.bak
 ~$*.xlsx
+
+# Raw match photos awaiting import (processed copies live in frontend/public/photos)
+photos_inbox/

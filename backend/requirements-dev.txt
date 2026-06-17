@@ -1,3 +1,4 @@
 -r requirements.txt
 pytest==8.3.4
 httpx==0.28.1
+Pillow==10.2.0  # used by import_photos.py to crop/optimise match photos

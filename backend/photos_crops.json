@@ -1,0 +1,11 @@
+{
+  "_comment": "Per-date crop hints for import_photos.py. zoom>1 zooms in; x/y are the crop centre as a fraction of the original (0=left/top, 1=right/bottom). Dates with no entry get a plain centred 16:9 crop. Hand-tuned by eye to frame the players; only needed for photos shot far from the group.",
+  "2026-01-19": { "zoom": 1.18, "x": 0.50, "y": 0.54 },
+  "2026-01-26": { "zoom": 1.25, "x": 0.50, "y": 0.60 },
+  "2026-03-16": { "zoom": 1.22, "x": 0.50, "y": 0.42 },
+  "2026-03-23": { "zoom": 1.22, "x": 0.50, "y": 0.42 },
+  "2026-04-13": { "zoom": 1.55, "x": 0.49, "y": 0.44 },
+  "2026-04-20": { "zoom": 1.22, "x": 0.50, "y": 0.46 },
+  "2026-05-04": { "zoom": 1.18, "x": 0.50, "y": 0.44 },
+  "2026-06-15": { "zoom": 1.28, "x": 0.50, "y": 0.50 }
+}
