@@ -74,7 +74,7 @@ export default function Home() {
           <p className="text-sm font-semibold uppercase tracking-widest text-pitch-100">
             {t("appTagline")}
           </p>
-          <h1 className="mt-2 max-w-2xl font-display text-3xl font-extrabold leading-tight sm:text-5xl">
+          <h1 className="mt-2 hidden max-w-2xl font-display text-3xl font-extrabold leading-tight sm:block sm:text-5xl">
             {t("home.heroTitle")}
           </h1>
           {t("home.heroSubtitle") && (
