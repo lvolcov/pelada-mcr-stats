@@ -72,6 +72,9 @@ export const dict = {
       open: "Ver partida",
       prev: "Partida anterior",
       next: "Próxima partida",
+      share: "Modo foto",
+      shareClose: "Fechar",
+      players: "Jogadores",
     },
     home: {
       heroTitle: "A pelada em números",
@@ -214,6 +217,9 @@ export const dict = {
       open: "View match",
       prev: "Previous match",
       next: "Next match",
+      share: "Photo mode",
+      shareClose: "Close",
+      players: "Players",
     },
     home: {
       heroTitle: "The pelada in numbers",

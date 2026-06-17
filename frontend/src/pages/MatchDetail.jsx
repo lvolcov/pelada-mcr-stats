@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { api } from "../lib/api";
@@ -10,6 +10,7 @@ import {
   PlayerCell,
   Avatar,
 } from "../components/ui";
+import { MatchShareCard, ShareOverlay } from "../components/ShareCard";
 
 // End-of-match photo: tries <base>/photos/<date>.jpg, falls back gracefully.
 function MatchPhoto({ date }) {
@@ -142,6 +143,19 @@ export default function MatchDetail() {
   const { t, lang } = useApp();
   const { data, error, loading, reload } = useApi(() => api.match(date), [date]);
   const { data: matchList } = useApi(() => api.matches(), []);
+  const [share, setShare] = useState(false);
+
+  // Close the share card on Escape and lock body scroll while it's open.
+  useEffect(() => {
+    if (!share) return;
+    const onKey = (e) => e.key === "Escape" && setShare(false);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [share]);
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
@@ -157,8 +171,29 @@ export default function MatchDetail() {
         >
           ← {t("match.back")}
         </Link>
-        {matchList && <MatchNav list={matchList} date={data.date} />}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShare(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-pitch-400 hover:text-pitch-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-pitch-400 dark:border-slate-700 dark:text-slate-300"
+            aria-label={t("match.share")}
+            title={t("match.share")}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+            <span className="hidden sm:inline">{t("match.share")}</span>
+          </button>
+          {matchList && <MatchNav list={matchList} date={data.date} />}
+        </div>
       </div>
+
+      {share && (
+        <ShareOverlay onClose={() => setShare(false)} label={t("match.shareClose")}>
+          <MatchShareCard data={data} lang={lang} t={t} />
+        </ShareOverlay>
+      )}
 
       {/* Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 p-8 text-white shadow-lg">
