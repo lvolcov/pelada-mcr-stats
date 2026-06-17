@@ -69,6 +69,25 @@ function TeamColumn({ title, accent, players }) {
 // (newer) match sits at the lower index and "previous" (older) at the higher
 // one. Next is the left arrow, previous the right. Ends are disabled: the
 // newest match has no next, the oldest no previous.
+// Chevron icon (defaults left); flipped horizontally for the right one so
+// both render identically — no font-dependent arrow glyphs.
+function Chevron({ flip = false }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`h-5 w-5 ${flip ? "rotate-180" : ""}`}
+      aria-hidden="true"
+    >
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  );
+}
+
 function MatchNav({ list, date }) {
   const { t } = useApp();
   const i = list.findIndex((m) => m.date === date);
@@ -76,8 +95,7 @@ function MatchNav({ list, date }) {
   const newer = i > 0 ? list[i - 1] : null;
   const older = i < list.length - 1 ? list[i + 1] : null;
 
-  const base =
-    "flex h-9 w-9 items-center justify-center rounded-lg border text-lg";
+  const base = "flex h-9 w-9 items-center justify-center rounded-lg border";
   const enabled =
     "border-slate-200 text-slate-600 transition hover:border-pitch-400 hover:text-pitch-600 dark:border-slate-700 dark:text-slate-300";
   const disabled =
@@ -93,11 +111,11 @@ function MatchNav({ list, date }) {
           aria-label={t("match.next")}
           title={t("match.next")}
         >
-          ←
+          <Chevron />
         </Link>
       ) : (
         <span className={`${base} ${disabled}`} aria-label={t("match.next")} aria-disabled="true">
-          ←
+          <Chevron />
         </span>
       )}
       {older ? (
@@ -108,11 +126,11 @@ function MatchNav({ list, date }) {
           aria-label={t("match.prev")}
           title={t("match.prev")}
         >
-          →
+          <Chevron flip />
         </Link>
       ) : (
         <span className={`${base} ${disabled}`} aria-label={t("match.prev")} aria-disabled="true">
-          →
+          <Chevron flip />
         </span>
       )}
     </nav>
