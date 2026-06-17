@@ -95,22 +95,35 @@ export default function PlayerProfile() {
         </div>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <StatCard label={t("common.goals")} value={data.goals} icon="⚽" accent />
-        <StatCard label={t("common.assists")} value={data.assists} icon="🅰️" />
-        <StatCard label={t("common.winPct")} value={`${data.win_pct}%`} icon="📈" />
-        <StatCard
-          label={`${t("common.goals")}/${t("common.games").toLowerCase()}`}
-          value={data.goals_per_game}
-          icon="🎯"
-        />
-        <StatCard
-          label={t("profile.attendance")}
-          value={`${data.games}/${data.total_sessions}`}
-          sub={`${data.attendance_pct}%`}
-          icon="📅"
-        />
+      {/* Stat cards. On mobile, win% becomes a full-width bar on top so the
+          remaining four cards fill a 2×2 with no gap. Desktop is a 5-up row. */}
+      <div>
+        <div className="card mb-4 flex items-center justify-between p-4 lg:hidden">
+          <span className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+            📈 {t("common.winPct")}
+          </span>
+          <span className="font-display text-2xl font-extrabold text-pitch-600 dark:text-pitch-400">
+            {data.win_pct}%
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+          <StatCard label={t("common.goals")} value={data.goals} icon="⚽" accent />
+          <StatCard label={t("common.assists")} value={data.assists} icon="🅰️" />
+          <div className="hidden lg:block">
+            <StatCard label={t("common.winPct")} value={`${data.win_pct}%`} icon="📈" />
+          </div>
+          <StatCard
+            label={`${t("common.goals")}/${t("common.games").toLowerCase()}`}
+            value={data.goals_per_game}
+            icon="🎯"
+          />
+          <StatCard
+            label={t("profile.attendance")}
+            value={`${data.games}/${data.total_sessions}`}
+            sub={`${data.attendance_pct}%`}
+            icon="📅"
+          />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
