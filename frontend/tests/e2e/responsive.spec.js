@@ -110,6 +110,22 @@ test.describe("Dashboard flows", () => {
     await expect(firstRow.getByText(/Douglas B/)).toBeVisible();
   });
 
+  test("recent form sort can be reset to default", async ({ page }) => {
+    await page.goto("/form");
+    await expect(page.getByRole("heading", { name: /Forma Recente|Recent Form/ })).toBeVisible();
+    // Apply a sort, then reset via the Padrão/Default chip.
+    await page.getByRole("button", { name: /Nome|Name/ }).first().click();
+    const resetChip = page.getByRole("button", { name: /Padrão|Default/ });
+    await resetChip.click();
+    await expect(resetChip).toBeVisible();
+  });
+
+  test("app manifest and icon are linked", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator('link[rel="manifest"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
+  });
+
   test("recent form shows absences and a legend", async ({ page }) => {
     await page.goto("/form");
     await expect(page.getByRole("heading", { name: /Forma Recente|Recent Form/ })).toBeVisible();

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { api } from "../lib/api";
-import { useApi, useSort, formatDate } from "../lib/format";
+import { useApi, useSort, formatDate, formatDateNumeric } from "../lib/format";
 import { Loading, ErrorState, PageHeader, PlayerCell, FormPills } from "../components/ui";
 
 function MatchCard({ match }) {
@@ -63,7 +63,13 @@ function MatchTable({ matches }) {
   const { sorted, sortKey, sortDir, toggle } = useSort(matches, "date", "desc");
 
   const cols = [
-    { key: "date", label: t("common.date"), align: "left", render: (m) => formatDate(m.date, lang) },
+    {
+      key: "date",
+      label: t("common.date"),
+      align: "left",
+      nowrap: true,
+      render: (m) => formatDateNumeric(m.date, lang),
+    },
     { key: "score", label: t("common.score"), align: "left" },
     { key: "player_count", label: t("common.players"), align: "right" },
     { key: "total_player_goals", label: t("common.goals"), align: "right" },
@@ -79,7 +85,9 @@ function MatchTable({ matches }) {
               {cols.map((c) => (
                 <th
                   key={c.key}
-                  className={`select-none px-4 py-3 ${c.align === "left" ? "text-left" : "text-right"}`}
+                  className={`select-none px-4 py-3 ${c.align === "left" ? "text-left" : "text-right"} ${
+                    c.nowrap ? "whitespace-nowrap" : ""
+                  }`}
                 >
                   <button
                     onClick={() => toggle(c.key)}
@@ -108,7 +116,7 @@ function MatchTable({ matches }) {
                     key={c.key}
                     className={`px-4 py-3 ${c.align === "left" ? "text-left" : "text-right tabular-nums"} ${
                       c.key === "score" ? "font-bold" : ""
-                    }`}
+                    } ${c.nowrap ? "whitespace-nowrap" : ""}`}
                   >
                     {c.render ? c.render(m) : m[c.key]}
                     {c.key === "score" && m.mixed && (
@@ -138,12 +146,12 @@ export default function Matches() {
   return (
     <div>
       <PageHeader title={t("matches.title")} subtitle={t("matches.subtitle")}>
-        <div className="inline-flex rounded-xl border border-slate-200 p-1 text-sm dark:border-slate-700">
+        <div className="flex w-full rounded-xl border border-slate-200 p-1 text-sm dark:border-slate-700 sm:w-auto">
           {["cards", "table"].map((v) => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`rounded-lg px-3 py-1.5 font-medium transition ${
+              className={`flex-1 rounded-lg px-4 py-1.5 font-medium transition sm:flex-none ${
                 view === v
                   ? "bg-pitch-600 text-white"
                   : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"

@@ -15,7 +15,7 @@ export default function Players() {
   const filtered = base
     .filter((p) => p.name.toLowerCase().includes(q.toLowerCase()))
     .filter((p) => (onlyMensalistas ? p.is_mensalista : true));
-  const { sorted, sortKey, sortDir, toggle } = useSort(filtered, "name", "asc");
+  const { sorted, sortKey, sortDir, toggle, reset, isDefault } = useSort(filtered, "name", "asc");
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
@@ -41,6 +41,16 @@ export default function Players() {
 
       <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span>{t("common.sortBy")}:</span>
+        <button
+          onClick={reset}
+          className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 font-medium transition ${
+            isDefault
+              ? "border-pitch-500 bg-pitch-50 text-pitch-700 dark:bg-pitch-900/30 dark:text-pitch-300"
+              : "border-transparent hover:bg-slate-100 dark:hover:bg-slate-800"
+          }`}
+        >
+          ↺ {t("common.default")}
+        </button>
         {sortOptions.map((o) => (
           <button
             key={o.k}

@@ -12,6 +12,16 @@ export function formatDate(iso, lang) {
   });
 }
 
+export function formatDateNumeric(iso, lang) {
+  if (!iso) return "—";
+  const d = new Date(`${iso}T00:00:00`);
+  return d.toLocaleDateString(lang === "pt" ? "pt-BR" : "en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
 export function formatDateShort(iso, lang) {
   if (!iso) return "—";
   const d = new Date(`${iso}T00:00:00`);
@@ -68,6 +78,13 @@ export function useSort(rows, initialKey = null, initialDir = "asc") {
     }
   }
 
+  // Restore the page's original order/direction.
+  function reset() {
+    setSortKey(initialKey);
+    setSortDir(initialDir);
+  }
+  const isDefault = sortKey === initialKey && sortDir === initialDir;
+
   const sorted = (() => {
     if (!sortKey) return rows;
     const out = [...rows].sort((a, b) => {
@@ -82,7 +99,7 @@ export function useSort(rows, initialKey = null, initialDir = "asc") {
     return sortDir === "desc" ? out.reverse() : out;
   })();
 
-  return { sorted, sortKey, sortDir, toggle };
+  return { sorted, sortKey, sortDir, toggle, reset, isDefault };
 }
 
 // Generic data hook with loading/error/refetch.

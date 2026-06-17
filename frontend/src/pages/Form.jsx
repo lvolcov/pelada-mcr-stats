@@ -23,7 +23,7 @@ export default function Form() {
   const { t, lang } = useApp();
   const { data, error, loading, reload } = useApi(api.form);
   // Default order comes from the backend (recent activity first); null = keep it.
-  const { sorted, sortKey, sortDir, toggle } = useSort(data || [], null);
+  const { sorted, sortKey, sortDir, toggle, reset, isDefault } = useSort(data || [], null);
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
@@ -52,6 +52,16 @@ export default function Form() {
       <PageHeader title={t("form.title")} subtitle={t("form.subtitle")} />
       <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
         <span>{t("common.sortBy")}:</span>
+        <button
+          onClick={reset}
+          className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 font-medium transition ${
+            isDefault
+              ? "border-pitch-500 bg-pitch-50 text-pitch-700 dark:bg-pitch-900/30 dark:text-pitch-300"
+              : "border-transparent hover:bg-slate-100 dark:hover:bg-slate-800"
+          }`}
+        >
+          ↺ {t("common.default")}
+        </button>
         {sortOptions.map((o) => (
           <button
             key={o.k}

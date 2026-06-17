@@ -18,7 +18,7 @@ export default function Mvp() {
   const { data, error, loading, reload } = useApi(api.mvp);
   const [newestFirst, setNewestFirst] = useState(true);
   // Hooks must run unconditionally — keep useSort above the early returns.
-  const { sorted, sortKey, sortDir, toggle } = useSort(
+  const { sorted, sortKey, sortDir, toggle, reset, isDefault } = useSort(
     data?.season || [],
     "mvp_count",
     "desc"
@@ -50,6 +50,16 @@ export default function Mvp() {
         <Section title={t("mvp.seasonRanking")}>
           <div className="mb-2 flex items-center gap-1 text-xs text-slate-400">
             <span>{t("common.sortBy")}:</span>
+            <button
+              onClick={reset}
+              className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 font-medium transition ${
+                isDefault
+                  ? "border-pitch-500 bg-pitch-50 text-pitch-700 dark:bg-pitch-900/30 dark:text-pitch-300"
+                  : "border-transparent hover:bg-slate-100 dark:hover:bg-slate-800"
+              }`}
+            >
+              ↺ {t("common.default")}
+            </button>
             <SortBtn k="mvp_count">{t("mvp.count")}</SortBtn>
             <SortBtn k="name">{t("common.name")}</SortBtn>
           </div>
