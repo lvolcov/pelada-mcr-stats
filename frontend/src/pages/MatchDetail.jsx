@@ -65,57 +65,54 @@ function TeamColumn({ title, accent, players }) {
   );
 }
 
-// Bottom nav between matches. List is ordered most-recent-first, so the
-// "next" (newer) match sits at the lower index and "previous" (older) at the
-// higher one. Ends are disabled: newest has no next, oldest no previous.
+// Compact arrow nav between matches. List is most-recent-first, so the "next"
+// (newer) match sits at the lower index and "previous" (older) at the higher
+// one. Next is the left arrow, previous the right. Ends are disabled: the
+// newest match has no next, the oldest no previous.
 function MatchNav({ list, date }) {
-  const { t, lang } = useApp();
+  const { t } = useApp();
   const i = list.findIndex((m) => m.date === date);
   if (i === -1) return null;
   const newer = i > 0 ? list[i - 1] : null;
   const older = i < list.length - 1 ? list[i + 1] : null;
 
-  const linkClass =
-    "flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm transition hover:border-pitch-400 hover:text-pitch-600 dark:border-slate-800";
-  const disabledClass =
-    "flex flex-1 items-center gap-2 rounded-xl border border-dashed border-slate-200 px-4 py-3 text-sm text-slate-300 dark:border-slate-800 dark:text-slate-700";
+  const base =
+    "flex h-9 w-9 items-center justify-center rounded-lg border text-lg";
+  const enabled =
+    "border-slate-200 text-slate-600 transition hover:border-pitch-400 hover:text-pitch-600 dark:border-slate-700 dark:text-slate-300";
+  const disabled =
+    "cursor-not-allowed border-dashed border-slate-200 text-slate-300 dark:border-slate-800 dark:text-slate-700";
 
   return (
-    <nav className="flex gap-3">
+    <nav className="flex gap-2">
       {newer ? (
-        <Link to={`/match/${newer.date}`} className={linkClass} rel="next">
-          <span aria-hidden>←</span>
-          <span className="truncate">
-            <span className="block text-xs uppercase tracking-wide text-slate-400">
-              {t("match.next")}
-            </span>
-            {formatDate(newer.date, lang)}
-          </span>
+        <Link
+          to={`/match/${newer.date}`}
+          className={`${base} ${enabled}`}
+          rel="next"
+          aria-label={t("match.next")}
+          title={t("match.next")}
+        >
+          ←
         </Link>
       ) : (
-        <span className={disabledClass} aria-disabled="true">
-          <span aria-hidden>←</span>
-          <span className="text-xs uppercase tracking-wide">{t("match.next")}</span>
+        <span className={`${base} ${disabled}`} aria-label={t("match.next")} aria-disabled="true">
+          ←
         </span>
       )}
       {older ? (
         <Link
           to={`/match/${older.date}`}
-          className={`${linkClass} justify-end text-right`}
+          className={`${base} ${enabled}`}
           rel="prev"
+          aria-label={t("match.prev")}
+          title={t("match.prev")}
         >
-          <span className="truncate">
-            <span className="block text-xs uppercase tracking-wide text-slate-400">
-              {t("match.prev")}
-            </span>
-            {formatDate(older.date, lang)}
-          </span>
-          <span aria-hidden>→</span>
+          →
         </Link>
       ) : (
-        <span className={`${disabledClass} justify-end text-right`} aria-disabled="true">
-          <span className="text-xs uppercase tracking-wide">{t("match.prev")}</span>
-          <span aria-hidden>→</span>
+        <span className={`${base} ${disabled}`} aria-label={t("match.prev")} aria-disabled="true">
+          →
         </span>
       )}
     </nav>
@@ -135,12 +132,15 @@ export default function MatchDetail() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to="/matches"
-        className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-pitch-600"
-      >
-        ← {t("match.back")}
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          to="/matches"
+          className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-pitch-600"
+        >
+          ← {t("match.back")}
+        </Link>
+        {matchList && <MatchNav list={matchList} date={data.date} />}
+      </div>
 
       {/* Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 p-8 text-white shadow-lg">
@@ -218,8 +218,6 @@ export default function MatchDetail() {
           <MatchPhoto date={data.date} />
         </div>
       </div>
-
-      {matchList && <MatchNav list={matchList} date={data.date} />}
     </div>
   );
 }
