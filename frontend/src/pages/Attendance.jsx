@@ -55,11 +55,9 @@ export default function Attendance() {
               <th className="sticky left-0 z-10 w-10 bg-white px-2 py-3 text-center dark:bg-slate-900">
                 #
               </th>
-              <SortTh
-                k="name"
-                label={t("common.player")}
-                className="sticky left-10 z-10 bg-white px-4 py-3 text-left dark:bg-slate-900"
-              />
+              <th className="sticky left-10 z-10 bg-white px-4 py-3 text-left dark:bg-slate-900">
+                {t("common.player")}
+              </th>
               {data.session_dates.map((d) => (
                 <th key={d} className="px-1 py-3 text-center text-[10px] font-medium text-slate-400">
                   {formatDateShort(d, lang)}
