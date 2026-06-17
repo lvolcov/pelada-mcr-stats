@@ -68,10 +68,10 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 p-8 text-white shadow-lg sm:p-12">
         <Logo className="pointer-events-none absolute right-4 top-1/2 hidden h-40 w-40 -translate-y-1/2 opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:block sm:h-48 sm:w-48" />
-        <Logo className="pointer-events-none absolute -right-4 -top-4 h-44 w-44 opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
+        <Logo className="pointer-events-none absolute -right-3 -top-3 h-28 w-28 opacity-90 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
         <div className="absolute -bottom-12 -left-12 h-52 w-52 rounded-full bg-amber-300 opacity-20 blur-3xl" />
         <div className="relative animate-fade-in">
-          <p className="text-sm font-semibold uppercase tracking-widest text-pitch-100">
+          <p className="max-w-[13rem] text-sm font-semibold uppercase tracking-widest text-pitch-100 sm:max-w-none">
             {t("appTagline")}
           </p>
           <h1 className="mt-2 hidden max-w-2xl font-display text-3xl font-extrabold leading-tight sm:block sm:text-5xl">
