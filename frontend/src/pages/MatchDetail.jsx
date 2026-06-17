@@ -190,7 +190,14 @@ export default function MatchDetail() {
       </div>
 
       {share && (
-        <ShareOverlay onClose={() => setShare(false)} label={t("match.shareClose")}>
+        <ShareOverlay
+          onClose={() => setShare(false)}
+          label={t("share.close")}
+          filename={`pelada-${data.date}`}
+          shareTitle={`Pelada MCR · ${formatDate(data.date, lang)} · ${data.score}`}
+          saveLabel={t("share.save")}
+          busyLabel={t("share.busy")}
+        >
           <MatchShareCard data={data} lang={lang} t={t} />
         </ShareOverlay>
       )}

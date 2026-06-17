@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   AreaChart,
@@ -23,12 +24,26 @@ import {
   Section,
   FormPills,
 } from "../components/ui";
+import { PlayerShareCard, ShareOverlay } from "../components/ShareCard";
 
 export default function PlayerProfile() {
   const { name } = useParams();
   const navigate = useNavigate();
   const { t, lang, theme } = useApp();
   const { data, error, loading, reload } = useApi(() => api.player(name), [name]);
+  const [share, setShare] = useState(false);
+
+  // Close the share card on Escape and lock body scroll while it's open.
+  useEffect(() => {
+    if (!share) return;
+    const onKey = (e) => e.key === "Escape" && setShare(false);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [share]);
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
@@ -47,12 +62,40 @@ export default function PlayerProfile() {
 
   return (
     <div className="space-y-6">
-      <Link
-        to="/players"
-        className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-pitch-600"
-      >
-        ← {t("common.backToPlayers")}
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          to="/players"
+          className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-pitch-600"
+        >
+          ← {t("common.backToPlayers")}
+        </Link>
+        <button
+          type="button"
+          onClick={() => setShare(true)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-pitch-400 hover:text-pitch-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-pitch-400 dark:border-slate-700 dark:text-slate-300"
+          aria-label={t("profile.share")}
+          title={t("profile.share")}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
+          <span className="hidden sm:inline">{t("profile.share")}</span>
+        </button>
+      </div>
+
+      {share && (
+        <ShareOverlay
+          onClose={() => setShare(false)}
+          label={t("share.close")}
+          filename={`pelada-${data.player}`}
+          shareTitle={`Pelada MCR · ${data.name}`}
+          saveLabel={t("share.save")}
+          busyLabel={t("share.busy")}
+        >
+          <PlayerShareCard data={data} lang={lang} t={t} />
+        </ShareOverlay>
+      )}
 
       {/* Header */}
       <div className="card flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-center">
