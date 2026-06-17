@@ -1,25 +1,30 @@
-"""Excel parser for the Pelada match-tracking workbook.
+"""CSV data layer for the Pelada match tracker.
 
-Reads the raw ``Player Match Stats`` sheet (the single source of truth) and the
-``Jogadores`` registry, returning clean Python structures. Results are cached and
-invalidated automatically when the file's modification time changes, so dropping a
-new workbook into the data folder refreshes everything on the next request.
+Reads the single source of truth — ``matches.csv`` (one row per player per
+session) — plus the ``players.csv`` roster and the ``mensalistas.json`` registry,
+returning clean Python structures. Results are cached and invalidated when any
+source file's modification time changes, so replacing a CSV (or appending a row)
+refreshes everything on the next request.
 
-Created: 2026-06-16
+The data used to live in an Excel workbook; it now lives in plain CSV so it can
+be appended to programmatically (e.g. by the Telegram update bot) and diffed in
+git. See docs/auto-update-pipeline.md.
+
+Created: 2026-06-16 · Migrated to CSV: 2026-06-17
 """
 
 from __future__ import annotations
 
+import csv
 import json
 import threading
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 
-import openpyxl
-
-RAW_SHEET = "Player Match Stats"
-PLAYERS_SHEET = "Jogadores"
+MATCHES_FILE = "matches.csv"
+PLAYERS_FILE = "players.csv"
+MENSALISTAS_FILE = "mensalistas.json"
 
 
 @dataclass
@@ -39,7 +44,7 @@ class MatchRow:
 
 @dataclass
 class Dataset:
-    """Everything parsed from one workbook snapshot."""
+    """Everything parsed from one snapshot of the source files."""
 
     rows: list[MatchRow] = field(default_factory=list)
     registered_players: list[str] = field(default_factory=list)
@@ -54,37 +59,54 @@ def _to_int(value) -> int:
     if value is None or value == "":
         return 0
     try:
-        return int(value)
+        return int(float(value))
     except (TypeError, ValueError):
         return 0
 
 
 def _to_date(value) -> date | None:
+    """Parse an ISO ``YYYY-MM-DD`` date (also tolerates a full timestamp)."""
     if isinstance(value, datetime):
         return value.date()
     if isinstance(value, date):
         return value
-    return None
+    if not value:
+        return None
+    try:
+        return date.fromisoformat(str(value).strip()[:10])
+    except ValueError:
+        return None
 
 
 def _norm_score(value) -> str:
     """Normalise score text, e.g. '5 X 3 ' -> '5 x 3'."""
     if value is None:
         return ""
-    return str(value).strip().replace(" X ", " x ").replace("X", "x") \
-        if any(c.isdigit() for c in str(value)) else str(value).strip()
+    s = str(value).strip()
+    return s.replace(" X ", " x ").replace("X", "x") if any(c.isdigit() for c in s) else s
 
 
-class WorkbookStore:
-    """Thread-safe, mtime-cached loader for the workbook."""
+class DataStore:
+    """Thread-safe, mtime-cached loader for the CSV data files.
 
-    def __init__(self, path: str | Path, mensalistas_path: str | Path | None = None) -> None:
+    ``path`` is the matches CSV; the roster and mensalistas files are looked up
+    next to it by default but can be overridden.
+    """
+
+    def __init__(
+        self,
+        path: str | Path,
+        players_path: str | Path | None = None,
+        mensalistas_path: str | Path | None = None,
+    ) -> None:
         self._path = Path(path)
-        # Mensalistas registry lives next to the workbook by default.
+        self._players_path = (
+            Path(players_path) if players_path else self._path.parent / PLAYERS_FILE
+        )
         self._mensalistas_path = (
             Path(mensalistas_path)
             if mensalistas_path
-            else self._path.parent / "mensalistas.json"
+            else self._path.parent / MENSALISTAS_FILE
         )
         self._lock = threading.Lock()
         self._cache: Dataset | None = None
@@ -97,14 +119,15 @@ class WorkbookStore:
         return self._path.exists()
 
     def get(self) -> Dataset:
-        """Return the parsed dataset, re-parsing if the file changed."""
+        """Return the parsed dataset, re-parsing if any source file changed."""
         if not self._path.exists():
-            raise FileNotFoundError(f"Workbook not found at {self._path}")
+            raise FileNotFoundError(f"Matches file not found at {self._path}")
 
-        # Cache key combines both files' mtimes so editing either refreshes.
+        # Cache key combines every source file's mtime so editing any refreshes.
         mtime = self._path.stat().st_mtime
-        if self._mensalistas_path.exists():
-            mtime += self._mensalistas_path.stat().st_mtime
+        for extra in (self._players_path, self._mensalistas_path):
+            if extra.exists():
+                mtime += extra.stat().st_mtime
         with self._lock:
             if self._cache is None or self._cache.source_mtime != mtime:
                 self._cache = self._parse(mtime)
@@ -125,42 +148,42 @@ class WorkbookStore:
             if not str(k).startswith("_")
         }
 
+    def _load_roster(self) -> list[str]:
+        if not self._players_path.exists():
+            return []
+        with self._players_path.open(encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            return [
+                str(r["player"]).strip().lower()
+                for r in reader
+                if r.get("player") and str(r["player"]).strip()
+            ]
+
     def _parse(self, mtime: float) -> Dataset:
-        wb = openpyxl.load_workbook(self._path, data_only=True, read_only=True)
-
         rows: list[MatchRow] = []
-        ws = wb[RAW_SHEET]
-        for raw in ws.iter_rows(min_row=2, values_only=True):
-            d = _to_date(raw[0])
-            player = raw[2]
-            if d is None or not player:
-                continue
-            rows.append(
-                MatchRow(
-                    date=d,
-                    score=_norm_score(raw[1]),
-                    player=str(player).strip().lower(),
-                    goals=_to_int(raw[3]),
-                    assists=_to_int(raw[4]),
-                    win=_to_int(raw[5]),
-                    loss=_to_int(raw[6]),
-                    draw=_to_int(raw[7]),
-                    mixed=_to_int(raw[8]),
+        with self._path.open(encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                d = _to_date(r.get("date"))
+                player = r.get("player")
+                if d is None or not player or not str(player).strip():
+                    continue
+                rows.append(
+                    MatchRow(
+                        date=d,
+                        score=_norm_score(r.get("score")),
+                        player=str(player).strip().lower(),
+                        goals=_to_int(r.get("goals")),
+                        assists=_to_int(r.get("assists")),
+                        win=_to_int(r.get("win")),
+                        loss=_to_int(r.get("loss")),
+                        draw=_to_int(r.get("draw")),
+                        mixed=_to_int(r.get("mixed")),
+                    )
                 )
-            )
 
-        registered: list[str] = []
-        if PLAYERS_SHEET in wb.sheetnames:
-            pws = wb[PLAYERS_SHEET]
-            for raw in pws.iter_rows(min_row=2, values_only=True):
-                name = raw[0]
-                if name and str(name).strip():
-                    registered.append(str(name).strip().lower())
-
-        wb.close()
         return Dataset(
             rows=rows,
-            registered_players=registered,
+            registered_players=self._load_roster(),
             mensalistas=self._load_mensalistas(),
             source_mtime=mtime,
             parsed_at=datetime.now().isoformat(timespec="seconds"),

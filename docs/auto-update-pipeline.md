@@ -27,25 +27,21 @@ No spreadsheets, no laptop.
 
 ---
 
-## 2. Key insight that makes this simple
+## 2. Why this is simple now
 
-The website **only reads one sheet**: `Player Match Stats`
-(`Date, Score, Player, Goals, Assists, Vitoria, Derrota, Empate, Time misto`),
-plus the `Jogadores` roster sheet. Everything shown on the site is recomputed
-from those rows by `backend/app/stats.py`.
+The data lives in **plain CSV** (`data/matches.csv`) — one row per player per
+session, columns `date,score,player,goals,assists,win,loss,draw,mixed`. The
+roster is `data/players.csv`; fixed spots are `data/mensalistas.json`.
+Everything on the site is recomputed from these by `backend/app/stats.py`.
 
-The other workbook sheets (`Geral`, `GA`, `% Vitórias`) are **Excel pivot
-tables for your own viewing only** — the site never touches them.
+> **History:** this used to be an Excel workbook. We migrated to CSV on
+> 2026-06-17 precisely to make this pipeline trivial — appending a CSV row is a
+> one-liner, whereas editing an `.xlsx` (with its tables/formulas/pivots) is
+> fiddly and merge-unfriendly. The migration is done; this doc assumes CSV.
 
-➡️ **"Adding a game" = appending one row per player to `Player Match Stats`**
-(+ optionally a photo named `<date>.jpg`). That's the entire data write.
-
-> **Trade-off to decide later:** appending rows via `openpyxl` updates the sheet
-> the site uses, but the in-Excel pivot tables won't auto-refresh until you open
-> the file and hit "Refresh All". Options: (a) accept that (pivots are
-> cosmetic); (b) stop relying on the pivots; (c) migrate the canonical input
-> from `.xlsx` to a plain CSV that's trivial to append. Recommendation: keep the
-> xlsx for now, revisit only if pivot drift actually bothers you.
+➡️ **"Adding a game" = appending one row per player to `data/matches.csv`**
+(+ optionally a photo named `<date>.jpg`). That's the entire data write — a
+plain text append that diffs cleanly in git.
 
 ---
 
@@ -57,7 +53,7 @@ tables for your own viewing only** — the site never touches them.
                                     ▼
                           Claude (headless, in repo clone)
                           parses free text → structured match JSON
-                                    │   uses the Jogadores roster as context
+                                    │   uses players.csv as the roster context
                                     ▼
                           add_match.py  (deterministic engine)
                           • map names → roster   • append rows
@@ -74,12 +70,12 @@ Built in **layers**, each usable on its own:
 
 | Layer | What it is | Depends on |
 |------|------------|-----------|
-| A. `add_match.py` | Deterministic engine: structured JSON → workbook rows + photo + commit | repo only |
+| A. `add_match.py` | Deterministic engine: structured JSON → CSV rows + photo + commit | repo only |
 | B. Free-text → JSON | Claude interprets the message into the schema A expects | A + Claude |
 | C. Telegram bot | Receives messages/photos, runs B, handles the confirm loop, pushes | A + B + server |
 
 You can stop after A (run it locally), or A+B (paste text, Claude fills the
-sheet), or go all the way to C.
+CSV), or go all the way to C.
 
 ---
 
@@ -102,15 +98,16 @@ The reliable foundation. No AI, fully testable.
 ```
 
 **Behaviour:**
-- Validate every `name` against the `Jogadores` roster (case-insensitive).
-  Unknown names → **reject** with the list of unmatched names (don't silently
-  invent players). Optionally support `--add-players` to register new ones.
-- Map `result` (`W`/`L`/`D`) → the `Vitoria/Derrota/Empate` columns; `mixed` →
-  `Time misto` (and on mixed days, result handling follows how the site already
+- Validate every `name` against `data/players.csv` (case-insensitive). Unknown
+  names → **reject** with the list of unmatched names (don't silently invent
+  players). Optionally support `--add-players` to append them to `players.csv`.
+- Map `result` (`W`/`L`/`D`) → the `win/loss/draw` columns; `mixed` → the
+  `mixed` column (on mixed days, result handling follows how the site already
   treats 3-team days).
-- Refuse if `date` already has rows (avoid duplicates) unless `--replace`.
-- Append rows to `Player Match Stats`, then run `import_photos.py` so a photo
-  already dropped in `photos_inbox/` is processed.
+- Refuse if `date` already has rows in `matches.csv` (avoid duplicates) unless
+  `--replace`.
+- Append one row per player to `data/matches.csv`, then run `import_photos.py`
+  so a photo already dropped in `photos_inbox/` is processed.
 - Optional `--commit` / `--push` flags; otherwise just write and print a diff.
 
 **Validation/warnings (non-fatal, surfaced in the preview):**
@@ -134,8 +131,8 @@ it on the server:
   `add_match.py`. Simplest to wire to a shell.
 - **Claude Agent SDK (Python):** more control/streaming inside the bot process.
 
-**Prompt design (sketch):** system instructions + the current roster (from the
-`Jogadores` sheet) + the rules:
+**Prompt design (sketch):** system instructions + the current roster (from
+`data/players.csv`) + the rules:
 - Map first names / nicknames to the exact roster slug; if ambiguous or unknown,
   **ask** rather than guess.
 - Infer `result` from which side ("venceu/perdeu/empate") each player is on and
@@ -206,7 +203,7 @@ push (default on).
 - **New players** not in the roster → bot asks "add Fulano as a new player?"
   before writing.
 - **Draws** → all players `D`, `is_draw` handled as today.
-- **Mixed / 3-team days** → `Time misto = 1`; the site already treats these
+- **Mixed / 3-team days** → `mixed = 1`; the site already treats these
   specially (highlight instead of MVP, excluded from win/loss).
 - **Teams unknown** → allow a results list without explicit W/L (site supports
   `teams_known = false`).
@@ -232,8 +229,8 @@ much faster workflow than editing Excel.
 
 ## 10. Open decisions
 
-- Keep `.xlsx` as the source of truth, or migrate `Player Match Stats` to a CSV
-  for easier appends? (Recommendation: keep xlsx for now.)
+- ~~Keep `.xlsx` or migrate to CSV?~~ **Done** — migrated to `data/matches.csv`
+  on 2026-06-17.
 - Push straight to `main`, or open a PR the Action previews first?
   (Recommendation: commit to `main` after the Telegram confirm — the confirm is
   the review.)

@@ -1,8 +1,7 @@
 """Statistics engine for the Pelada dashboards.
 
-Every figure is derived from the raw ``MatchRow`` list (never the workbook's own
-pivot sheets, which may be stale). Each function returns plain dicts/lists ready to
-be serialised to JSON.
+Every figure is derived from the raw ``MatchRow`` list parsed from the CSV data.
+Each function returns plain dicts/lists ready to be serialised to JSON.
 
 Mixed-team days ("time misto", e.g. the 3-team session on 2026-02-23) are special:
 their goals and assists DO count towards season totals, but they are excluded from

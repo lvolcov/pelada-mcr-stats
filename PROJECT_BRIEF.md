@@ -11,33 +11,34 @@ Build a React web app (Dockerised) that reads the Monday football group's Excel 
 
 ---
 
-## Excel File Analysis
+## Data Model
 
-**File:** `Football_Player_Match_and_Totals.xlsx`
+> Originally an Excel workbook; **migrated to plain CSV on 2026-06-17** so it can be
+> appended programmatically (e.g. by the Telegram update bot) and diffed in git. The
+> site only ever used the raw event log + roster — the workbook's pivot sheets
+> (`Geral`, `GA`, `% Vitórias`) were derived views and are gone.
 
-### Sheets
+**Files** (in `data/`):
 
-| Sheet | Purpose |
+| File | Purpose |
 |---|---|
-| `Jogadores` | Master player registry — 33 players (lowercase names, used as dropdown validation) |
-| `Player Match Stats` | Raw event log — one row per player per game day |
-| `Geral` | Pivot: per-player season aggregates |
-| `GA` | Goals + Assists ranking table (composite score = goals×1000 + assists for tiebreaking) |
-| `% Vitórias` | Win-rate analysis with an eligibility filter (≥60% of total games played) |
+| `matches.csv` | Source of truth — one row per player per game day |
+| `players.csv` | Master player registry — 33 players (lowercase names) |
+| `mensalistas.json` | Fixed-spot (mensalista) registry |
 
-### Raw Data (`Player Match Stats`)
+### `matches.csv`
 
 | Column | Type | Notes |
 |---|---|---|
-| Date | datetime | Weekly Monday session date |
-| Score | string | e.g. `"4 x 2"` — overall match score |
-| Player | string | Lowercase player name |
-| Goals | int | Goals scored in this game |
-| Assists | int | Assists in this game |
-| Vitoria | 0/1 | Player's team won |
-| Derrota | 0/1 | Player's team lost |
-| Empate | 0/1 | Draw |
-| Time misto | 0/1 | Flag for when teams were mixed (treated separately in rankings) |
+| `date` | `YYYY-MM-DD` | Weekly Monday session date |
+| `score` | string | e.g. `"4 x 2"` — overall match score |
+| `player` | string | Lowercase player name (must exist in `players.csv`) |
+| `goals` | int | Goals scored in this game |
+| `assists` | int | Assists in this game |
+| `win` | 0/1 | Player's team won |
+| `loss` | 0/1 | Player's team lost |
+| `draw` | 0/1 | Draw |
+| `mixed` | 0/1 | Teams were mixed that day (treated separately in rankings) |
 
 ### Key Numbers (as of 2026-06-16)
 
@@ -71,16 +72,18 @@ Build a React web app (Dockerised) that reads the Monday football group's Excel 
 ```
 pelada-stats/
 ├── docker-compose.yml
-├── backend/          # Python (FastAPI) — parses Excel, exposes REST API
+├── backend/          # Python (FastAPI) — parses the CSV, exposes REST API
 │   └── ...
 ├── frontend/         # React — dashboards and UI
 │   └── ...
-└── data/             # Mounted volume — drop new .xlsx here to refresh
-    └── Football_Player_Match_and_Totals.xlsx
+└── data/             # Mounted volume — edit matches.csv here to refresh
+    ├── matches.csv
+    ├── players.csv
+    └── mensalistas.json
 ```
 
-- The `data/` folder is a Docker volume mount. Replacing the file triggers a re-read on next API call.
-- The backend parses the Excel on request (no database needed for this scale).
+- The `data/` folder is a Docker volume mount. Editing a file triggers a re-read on next API call.
+- The backend parses the CSV on request (no database needed for this scale).
 - The frontend calls the backend API and renders charts/tables.
 
 ---
@@ -119,14 +122,16 @@ pelada-stats/
 ```
 pelada-stats/
 ├── docker-compose.yml
-├── backend/          # Python FastAPI — parses Excel, exposes REST API
+├── backend/          # Python FastAPI — parses the CSV, exposes REST API
 │   ├── main.py
-│   ├── parser.py     # openpyxl → structured dicts/dataframes
+│   ├── parser.py     # csv → structured dicts/dataframes
 │   └── requirements.txt
 ├── frontend/         # React + Vite + Tailwind
 │   └── src/
 │       ├── pages/    # Home, Leaderboard, PlayerProfile, MatchHistory, ...
 │       └── components/
-└── data/             # Docker volume mount — replace .xlsx here to refresh
-    └── Football_Player_Match_and_Totals.xlsx
+└── data/             # Docker volume mount — edit matches.csv here to refresh
+    ├── matches.csv
+    ├── players.csv
+    └── mensalistas.json
 ```

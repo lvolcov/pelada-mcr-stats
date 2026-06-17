@@ -5,7 +5,7 @@ Runs the same stats engine the live API uses, but writes the results to a folder
 what the GitHub Actions workflow calls before building the site.
 
 Usage:
-    python generate_static.py [--workbook PATH] [--out DIR]
+    python generate_static.py [--matches PATH] [--out DIR]
 
 Created: 2026-06-16
 """
@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 
 from app import stats
-from app.parser import WorkbookStore
+from app.parser import DataStore
 
 ROOT = Path(__file__).resolve().parent
 
@@ -30,9 +30,9 @@ def write_json(path: Path, data) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate static JSON for the dashboards.")
     parser.add_argument(
-        "--workbook",
-        default=str(ROOT.parent / "data" / "Football_Player_Match_and_Totals.xlsx"),
-        help="Path to the .xlsx workbook.",
+        "--matches",
+        default=str(ROOT.parent / "data" / "matches.csv"),
+        help="Path to the matches CSV.",
     )
     parser.add_argument(
         "--out",
@@ -42,7 +42,7 @@ def main() -> None:
     args = parser.parse_args()
 
     out = Path(args.out)
-    ds = WorkbookStore(args.workbook).get()
+    ds = DataStore(args.matches).get()
 
     # Top-level endpoints -> <name>.json
     endpoints = {

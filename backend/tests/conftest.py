@@ -1,19 +1,24 @@
-"""Shared pytest fixtures. Points the app at the real workbook in ../data."""
+"""Shared pytest fixtures.
+
+Tests run against a frozen sample dataset (tests/data/) — a snapshot of the
+19-match season — so adding real matches to data/matches.csv never breaks the
+suite. The asserted totals below correspond to this fixed sample.
+"""
 
 import os
 from pathlib import Path
 
 import pytest
 
-WORKBOOK = Path(__file__).resolve().parents[2] / "data" / "Football_Player_Match_and_Totals.xlsx"
-os.environ["WORKBOOK_PATH"] = str(WORKBOOK)
+MATCHES = Path(__file__).resolve().parent / "data" / "sample_matches.csv"
+os.environ["MATCHES_PATH"] = str(MATCHES)
 
 
 @pytest.fixture(scope="session")
 def dataset():
-    from app.parser import WorkbookStore
+    from app.parser import DataStore
 
-    return WorkbookStore(WORKBOOK).get()
+    return DataStore(str(MATCHES)).get()
 
 
 @pytest.fixture(scope="session")

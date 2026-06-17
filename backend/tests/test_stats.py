@@ -1,4 +1,5 @@
-"""Unit tests for the statistics engine, validated against known workbook totals."""
+"""Unit tests for the statistics engine, validated against the frozen sample
+dataset in tests/data/ (a snapshot of the 19-match season)."""
 
 from app import stats
 

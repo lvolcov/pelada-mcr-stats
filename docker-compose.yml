@@ -1,5 +1,5 @@
 # Pelada MCR Stats — full stack.
-# Drop a new workbook into ./data to refresh the site (read on next request).
+# Edit ./data/matches.csv to refresh the site (read on next request).
 
 services:
   backend:
@@ -7,9 +7,9 @@ services:
     container_name: pelada-backend
     restart: unless-stopped
     environment:
-      WORKBOOK_PATH: /data/Football_Player_Match_and_Totals.xlsx
+      MATCHES_PATH: /data/matches.csv
     volumes:
-      # Read-only mount of the data folder — replace the .xlsx here to update.
+      # Read-only mount of the data folder — edit the CSVs here to update.
       - ./data:/data:ro
     expose:
       - "8000"

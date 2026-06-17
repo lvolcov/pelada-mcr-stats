@@ -1,8 +1,8 @@
 """FastAPI application exposing the Pelada statistics.
 
-The workbook is re-read automatically whenever its modification time changes, so
-replacing the file in the mounted data folder refreshes every endpoint on the next
-request — no restart required.
+The CSV data is re-read automatically whenever a source file's modification time
+changes, so editing data/matches.csv in the mounted data folder refreshes every
+endpoint on the next request — no restart required.
 
 Created: 2026-06-16
 """
@@ -16,11 +16,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import stats
-from .parser import WorkbookStore
+from .parser import DataStore
 
-DATA_PATH = os.environ.get(
-    "WORKBOOK_PATH", "/data/Football_Player_Match_and_Totals.xlsx"
-)
+DATA_PATH = os.environ.get("MATCHES_PATH", "/data/matches.csv")
 
 app = FastAPI(
     title="Pelada MCR Stats API",
@@ -37,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-store = WorkbookStore(DATA_PATH)
+store = DataStore(DATA_PATH)
 
 
 def _ds():
@@ -46,7 +44,7 @@ def _ds():
     except FileNotFoundError:
         raise HTTPException(
             status_code=503,
-            detail=f"Workbook not found. Expected at {DATA_PATH}.",
+            detail=f"Matches file not found. Expected at {DATA_PATH}.",
         )
 
 
@@ -54,8 +52,8 @@ def _ds():
 def health():
     return {
         "status": "ok",
-        "workbook_present": store.exists(),
-        "workbook_path": str(store.path),
+        "data_present": store.exists(),
+        "data_path": str(store.path),
     }
 
 

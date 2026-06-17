@@ -6,7 +6,7 @@ extension `.jpg`.
 
 ## Adding new photos (recommended)
 
-Same routine as adding the workbook after a match:
+Same routine as adding the match data after a game:
 
 1. Drop the raw photo into `photos_inbox/` at the repo root. Name it by the match
    date — either `DD-MM-YYYY.jpg` (e.g. `15-06-2026.jpg`) or `YYYY-MM-DD.jpg`.
@@ -38,6 +38,6 @@ folder are tracked.
 
 - If no file exists for a date, the match page shows a "no photo" placeholder, so
   it's fine to skip matches where no photo was taken (e.g. draws).
-- A photo whose date has no match yet (workbook not updated) is reported as an
+- A photo whose date has no match yet (matches.csv not updated) is reported as an
   "orphan" by the importer — it'll light up automatically once that match's data
   is added.

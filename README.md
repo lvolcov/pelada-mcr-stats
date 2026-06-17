@@ -1,8 +1,8 @@
 # ⚽ Pelada MCR · Stats
 
-A dockerised web app that turns the Monday football group's Excel tracker into a set
-of friendly, interactive dashboards. Drop a new workbook in after each game and the
-site refreshes automatically.
+A dockerised web app that turns the Monday football group's match log into a set
+of friendly, interactive dashboards. Add a row per player to a CSV after each game
+and the site refreshes automatically.
 
 **Stack:** FastAPI (Python) backend · React + Vite + Tailwind frontend · nginx · Docker Compose
 
@@ -17,17 +17,24 @@ The site runs in two ways from the same codebase:
 - **GitHub Pages (no server)** — a GitHub Actions workflow pre-renders the stats to
   static JSON and deploys the built site on every push to `main`. This is the public
   link above. No hosting cost, no backend to run.
-- **Docker (local / self-hosted)** — the live FastAPI backend parses the workbook on
+- **Docker (local / self-hosted)** — the live FastAPI backend parses the CSV on
   each request. Useful for local development or a private LAN deploy.
 
 ### Updating the data after a game (Pages)
 
-1. Replace `data/Football_Player_Match_and_Totals.xlsx` with the new file — either
-   commit & push it, **or** drag-and-drop it in the GitHub web UI
-   (repo → `data` → the file → *Edit* → upload → *Commit*).
+The source of truth is **`data/matches.csv`** — one row per player per game with
+columns `date,score,player,goals,assists,win,loss,draw,mixed`
+(`date` as `YYYY-MM-DD`; `win/loss/draw/mixed` are `0`/`1`).
+
+1. Append the new game's rows to `data/matches.csv` — commit & push, **or** edit it
+   in the GitHub web UI (repo → `data/matches.csv` → *Edit* → *Commit*).
 2. (Optional) add the match photo to `frontend/public/photos/<date>.jpg`.
-3. (Optional) edit `data/mensalistas.json` if the fixed-spot list changed.
+3. (Optional) register any new player in `data/players.csv`, or edit
+   `data/mensalistas.json` if the fixed-spot list changed.
 4. The deploy workflow runs automatically and the site updates in ~1–2 minutes.
+
+> A Telegram bot to do this from your phone (send results + photo → auto-commit) is
+> designed in [`docs/auto-update-pipeline.md`](docs/auto-update-pipeline.md).
 
 ---
 
@@ -59,8 +66,8 @@ The site runs in two ways from the same codebase:
 - **Homepage charts** — top scorers (goals + assists) and a goals-per-session trend.
 - **Installable (PWA)** — a web manifest and a bee-with-football app icon, so the site
   can be added to a phone's home screen with a proper logo.
-- **Auto-refresh** — the backend re-reads the workbook (and `mensalistas.json`)
-  whenever either changes. Replace the file, reload the page — no restart.
+- **Auto-refresh** — the backend re-reads the CSV data (and `mensalistas.json`)
+  whenever any of them changes. Edit a file, reload the page — no restart.
 - **Brazilian-Manchester branding** — Manchester worker-bee logo, locked to
   Brazilian Portuguese (English strings retained internally).
 - **Dark / light theme** — persisted, dark by default.
@@ -84,14 +91,13 @@ To change the host port, edit the `ports` mapping for the `frontend` service in
 
 ## Updating the data after a game
 
-This section applies to the **Docker** deployment. The workbook lives in
-`./data/Football_Player_Match_and_Totals.xlsx` and is mounted into the backend
-read-only. To refresh the site:
+This section applies to the **Docker** deployment. The data lives in
+`./data/matches.csv` (mounted into the backend read-only). To refresh the site:
 
-1. Replace `data/Football_Player_Match_and_Totals.xlsx` with the new file (same name).
+1. Append the new game's rows to `data/matches.csv` (one per player).
 2. Reload the page — stats are recomputed on the next request.
 
-Keep the sheet/column layout intact (see **Data model** below).
+Keep the column layout intact (see **Data model** below).
 (For the GitHub Pages flow, see **Hosting** near the top.)
 
 ---
@@ -102,11 +108,12 @@ Keep the sheet/column layout intact (see **Data model** below).
 Pelada_MCR_Stats_Website/
 ├── docker-compose.yml         # orchestrates both services + data volume
 ├── data/
-│   ├── Football_Player_Match_and_Totals.xlsx   # source workbook (mounted read-only)
+│   ├── matches.csv            # source of truth: one row per player per game
+│   ├── players.csv            # roster of valid player names
 │   └── mensalistas.json       # editable fixed-spot registry
-├── backend/                   # FastAPI — parses Excel, exposes /api/*
+├── backend/                   # FastAPI — parses the CSV, exposes /api/*
 │   ├── app/
-│   │   ├── parser.py          # mtime-cached workbook + mensalistas loader
+│   │   ├── parser.py          # mtime-cached CSV + mensalistas loader
 │   │   ├── stats.py           # all dashboard computations + match detail
 │   │   └── main.py            # FastAPI endpoints
 │   ├── generate_static.py     # pre-renders every endpoint to JSON for Pages
@@ -136,22 +143,22 @@ production.
 
 ## Data model
 
-All figures are derived **only** from the raw `Player Match Stats` sheet (one row per
-player per session) — the workbook's own pivot sheets are ignored to avoid stale data.
+All figures are derived from **`data/matches.csv`** — one row per player per
+session.
 
-| Column      | Meaning                                            |
-| ----------- | -------------------------------------------------- |
-| Date        | Session date (one score per date)                  |
-| Score       | Overall match score, e.g. `5 x 3` (or `3 times`)   |
-| Player      | Lowercase player name                              |
-| Goals       | Goals scored that session                          |
-| Assists     | Assists that session                               |
-| Vitoria     | 1 if the player's team won                          |
-| Derrota     | 1 if lost                                          |
-| Empate      | 1 if drew                                          |
-| Time misto  | 1 if teams were reshuffled (mixed-team day)        |
+| Column    | Meaning                                            |
+| --------- | -------------------------------------------------- |
+| `date`    | Session date `YYYY-MM-DD` (one score per date)     |
+| `score`   | Overall match score, e.g. `5 x 3` (or `3 times`)   |
+| `player`  | Lowercase player name (must exist in `players.csv`)|
+| `goals`   | Goals scored that session                          |
+| `assists` | Assists that session                               |
+| `win`     | 1 if the player's team won                         |
+| `loss`    | 1 if lost                                          |
+| `draw`    | 1 if drew                                          |
+| `mixed`   | 1 if teams were reshuffled (mixed-team day)        |
 
-The `Jogadores` sheet provides the registered-player list.
+`data/players.csv` provides the registered-player list (column `player`).
 
 ### Mixed-team rule
 
@@ -189,7 +196,7 @@ Base path `/api`. All endpoints are `GET` and return JSON.
 
 | Endpoint              | Description                                  |
 | --------------------- | -------------------------------------------- |
-| `/health`             | Service + workbook status                    |
+| `/health`             | Service + data status                        |
 | `/overview`           | Season headline numbers + highlights         |
 | `/leaderboard`        | All players ranked by goals                  |
 | `/winrate`            | Win % ranking (≥60% attendance eligibility)  |
@@ -226,7 +233,7 @@ file, the page shows a "no photo" placeholder. See `frontend/public/photos/READM
 ```bash
 cd backend
 pip install -r requirements.txt
-WORKBOOK_PATH=../data/Football_Player_Match_and_Totals.xlsx \
+MATCHES_PATH=../data/matches.csv \
   uvicorn app.main:app --reload --port 8000
 ```
 
@@ -270,7 +277,7 @@ dashboard flows.
 
 | Variable        | Where            | Default                                          |
 | --------------- | ---------------- | ------------------------------------------------ |
-| `WORKBOOK_PATH` | backend env      | `/data/Football_Player_Match_and_Totals.xlsx`    |
+| `MATCHES_PATH`  | backend env      | `/data/matches.csv`                              |
 | host port       | docker-compose   | `8095`                                           |
 | `BASE_URL`      | Playwright env   | `http://localhost:8095`                          |
 

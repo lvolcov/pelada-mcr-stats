@@ -5,7 +5,7 @@ from an inbox folder, normalises every one to a tidy 16:9 web-sized JPEG and
 writes it to ``frontend/public/photos/<YYYY-MM-DD>.jpg`` — the exact name the
 match page looks for. Finally it reports which matches still have no photo.
 
-The intended workflow mirrors the workbook one: drop new photos into the inbox
+The intended workflow mirrors the data one: drop new photos into the inbox
 (default ``photos_inbox/``), then run this script.
 
 Usage:
@@ -166,7 +166,7 @@ def main() -> None:
     else:
         print("Every known match has a photo. 🎉")
     if orphan:
-        print("\nPhotos with no matching match (workbook not updated yet?):")
+        print("\nPhotos with no matching match (matches.csv not updated yet?):")
         for d in orphan:
             print(f"  ? {d}.jpg")
 

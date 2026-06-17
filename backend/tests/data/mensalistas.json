@@ -1,0 +1,21 @@
+{
+  "_note": "Mensalistas têm vaga fixa toda segunda; diaristas só jogam quando abre vaga. Edite este arquivo para manter a lista atualizada. As chaves devem ser exatamente o nome do jogador como aparece na planilha (minúsculas). 'since' é a data ISO (AAAA-MM-DD) desde quando a pessoa é mensalista. Depois de editar, faça commit/push (ou suba pelo site do GitHub) que o site atualiza sozinho.",
+  "mensalistas": {
+    "alisson": "2026-01-19",
+    "gabriel diretoria": "2026-01-19",
+    "miguel saddi": "2026-01-19",
+    "diego": "2026-01-19",
+    "junior": "2026-01-19",
+    "hernani": "2026-01-19",
+    "miguel miranda": "2026-01-19",
+    "luciano": "2026-01-19",
+    "jonathan": "2026-01-19",
+    "douglas b": "2026-01-19",
+    "leandro": "2026-01-19",
+    "joao": "2026-01-19",
+    "guilherme": "2026-01-19",
+    "marcus": "2026-01-19",
+    "thiago": "2026-01-19",
+    "bruno": "2026-02-23"
+  }
+}

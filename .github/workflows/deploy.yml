@@ -1,5 +1,5 @@
 # Build the dashboards as a static site and deploy to GitHub Pages.
-# Triggers on pushes to main (including when the workbook in data/ is replaced).
+# Triggers on pushes to main (including when data/matches.csv is updated).
 
 name: Deploy to GitHub Pages
 
@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Generate static JSON from the workbook
+      - name: Generate static JSON from the CSV data
         working-directory: backend
         run: |
           pip install -r requirements.txt
