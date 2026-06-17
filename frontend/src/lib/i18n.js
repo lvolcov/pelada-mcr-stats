@@ -70,6 +70,8 @@ export const dict = {
       noPhoto: "Sem foto desta partida",
       goalsAssists: "Gols e assistências",
       open: "Ver partida",
+      prev: "Partida anterior",
+      next: "Próxima partida",
     },
     home: {
       heroTitle: "A pelada em números",
@@ -210,6 +212,8 @@ export const dict = {
       noPhoto: "No photo for this match",
       goalsAssists: "Goals and assists",
       open: "View match",
+      prev: "Previous match",
+      next: "Next match",
     },
     home: {
       heroTitle: "The pelada in numbers",

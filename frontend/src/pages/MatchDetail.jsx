@@ -65,10 +65,68 @@ function TeamColumn({ title, accent, players }) {
   );
 }
 
+// Bottom nav between matches. List is ordered most-recent-first, so the
+// "next" (newer) match sits at the lower index and "previous" (older) at the
+// higher one. Ends are disabled: newest has no next, oldest no previous.
+function MatchNav({ list, date }) {
+  const { t, lang } = useApp();
+  const i = list.findIndex((m) => m.date === date);
+  if (i === -1) return null;
+  const newer = i > 0 ? list[i - 1] : null;
+  const older = i < list.length - 1 ? list[i + 1] : null;
+
+  const linkClass =
+    "flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm transition hover:border-pitch-400 hover:text-pitch-600 dark:border-slate-800";
+  const disabledClass =
+    "flex flex-1 items-center gap-2 rounded-xl border border-dashed border-slate-200 px-4 py-3 text-sm text-slate-300 dark:border-slate-800 dark:text-slate-700";
+
+  return (
+    <nav className="flex gap-3">
+      {older ? (
+        <Link to={`/match/${older.date}`} className={linkClass} rel="prev">
+          <span aria-hidden>←</span>
+          <span className="truncate">
+            <span className="block text-xs uppercase tracking-wide text-slate-400">
+              {t("match.prev")}
+            </span>
+            {formatDate(older.date, lang)}
+          </span>
+        </Link>
+      ) : (
+        <span className={disabledClass} aria-disabled="true">
+          <span aria-hidden>←</span>
+          <span className="text-xs uppercase tracking-wide">{t("match.prev")}</span>
+        </span>
+      )}
+      {newer ? (
+        <Link
+          to={`/match/${newer.date}`}
+          className={`${linkClass} justify-end text-right`}
+          rel="next"
+        >
+          <span className="truncate">
+            <span className="block text-xs uppercase tracking-wide text-slate-400">
+              {t("match.next")}
+            </span>
+            {formatDate(newer.date, lang)}
+          </span>
+          <span aria-hidden>→</span>
+        </Link>
+      ) : (
+        <span className={`${disabledClass} justify-end text-right`} aria-disabled="true">
+          <span className="text-xs uppercase tracking-wide">{t("match.next")}</span>
+          <span aria-hidden>→</span>
+        </span>
+      )}
+    </nav>
+  );
+}
+
 export default function MatchDetail() {
   const { date } = useParams();
   const { t, lang } = useApp();
   const { data, error, loading, reload } = useApi(() => api.match(date), [date]);
+  const { data: matchList } = useApi(() => api.matches(), []);
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
@@ -160,6 +218,8 @@ export default function MatchDetail() {
           <MatchPhoto date={data.date} />
         </div>
       </div>
+
+      {matchList && <MatchNav list={matchList} date={data.date} />}
     </div>
   );
 }

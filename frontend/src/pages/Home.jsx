@@ -67,7 +67,8 @@ export default function Home() {
     <div className="space-y-8">
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 p-8 text-white shadow-lg sm:p-12">
-        <Logo className="pointer-events-none absolute -right-10 -top-10 h-52 w-52 opacity-15" />
+        <Logo className="pointer-events-none absolute right-4 top-1/2 hidden h-40 w-40 -translate-y-1/2 opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:block sm:h-48 sm:w-48" />
+        <Logo className="pointer-events-none absolute -right-4 -top-4 h-44 w-44 opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
         <div className="absolute -bottom-12 -left-12 h-52 w-52 rounded-full bg-amber-300 opacity-20 blur-3xl" />
         <div className="relative animate-fade-in">
           <p className="text-sm font-semibold uppercase tracking-widest text-pitch-100">
