@@ -65,7 +65,7 @@ export default function GaRate() {
           </BarChart>
         </ResponsiveContainer>
       </Section>
-      <RankTable rows={data.ranking} columns={columns} />
+      <RankTable rows={data.ranking} columns={columns} defaultSort="ga_per_game" />
     </div>
   );
 }

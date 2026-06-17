@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { api } from "../lib/api";
-import { useApi, useSort, formatDateShort } from "../lib/format";
+import { useApi, useSort, formatDate, formatDateShort } from "../lib/format";
 import { Loading, ErrorState, PageHeader, Avatar, MensalistaBadge } from "../components/ui";
 
 export default function Attendance() {
@@ -76,16 +77,28 @@ export default function Attendance() {
                     </span>
                   </div>
                 </td>
-                {p.sessions.map((present, i) => (
-                  <td key={i} className="px-1 py-2 text-center">
-                    <span
-                      className={`inline-block h-5 w-5 rounded ${
-                        present ? "bg-pitch-500" : "bg-slate-100 dark:bg-slate-800"
-                      }`}
-                      title={present ? "✓" : "—"}
-                    />
-                  </td>
-                ))}
+                {p.sessions.map((present, i) => {
+                  const info = data.session_info?.[i] || { date: data.session_dates[i] };
+                  const tip = `${p.name} · ${formatDate(info.date, lang)}${
+                    info.score ? ` · ${info.score}` : ""
+                  } — ${present ? "✓" : "—"}`;
+                  return (
+                    <td key={i} className="px-1 py-2 text-center">
+                      {present ? (
+                        <Link
+                          to={`/match/${info.date}`}
+                          title={tip}
+                          className="inline-block h-5 w-5 rounded bg-pitch-500 transition hover:ring-2 hover:ring-pitch-300"
+                        />
+                      ) : (
+                        <span
+                          className="inline-block h-5 w-5 rounded bg-slate-100 dark:bg-slate-800"
+                          title={tip}
+                        />
+                      )}
+                    </td>
+                  );
+                })}
                 <td className="px-3 py-2 text-right">
                   <span className="font-bold tabular-nums">{p.attended}</span>
                   <span className="text-xs text-slate-400"> ({p.attendance_pct}%)</span>

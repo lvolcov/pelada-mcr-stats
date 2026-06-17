@@ -1,6 +1,6 @@
 import { useApp } from "../context/AppContext";
 import { api } from "../lib/api";
-import { useApi, useSort } from "../lib/format";
+import { useApi, useSort, formatDate } from "../lib/format";
 import { Loading, ErrorState, PageHeader, FormPills, PlayerCell } from "../components/ui";
 
 function StreakBadge({ type, len }) {
@@ -20,17 +20,19 @@ function StreakBadge({ type, len }) {
 }
 
 export default function Form() {
-  const { t } = useApp();
+  const { t, lang } = useApp();
   const { data, error, loading, reload } = useApi(api.form);
-  const { sorted, sortKey, sortDir, toggle } = useSort(data || [], "form_points", "desc");
+  // Default order comes from the backend (recent activity first); null = keep it.
+  const { sorted, sortKey, sortDir, toggle } = useSort(data || [], null);
 
   if (loading) return <Loading />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
 
   const sortOptions = [
+    { k: "recent_games", label: t("form.recent") },
     { k: "form_points", label: t("form.title") },
     { k: "streak_len", label: t("form.streak") },
-    { k: "games", label: t("common.games") },
+    { k: "last_seen", label: t("common.lastSeen") },
     { k: "name", label: t("common.name") },
   ];
 
@@ -55,20 +57,30 @@ export default function Form() {
         ))}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {sorted.map((p) => (
-          <div
-            key={p.player}
-            className="card flex items-center justify-between gap-3 p-4"
-          >
-            <div className="min-w-0">
-              <PlayerCell name={p.name} player={p.player} />
-              <div className="mt-2">
-                <StreakBadge type={p.streak_type} len={p.streak_len} />
+        {sorted.map((p) => {
+          const inactive = p.recent_games === 0;
+          return (
+            <div
+              key={p.player}
+              className={`card flex items-center justify-between gap-3 p-4 ${
+                inactive ? "opacity-60" : ""
+              }`}
+            >
+              <div className="min-w-0">
+                <PlayerCell name={p.name} player={p.player} />
+                <div className="mt-2 flex items-center gap-2">
+                  <StreakBadge type={p.streak_type} len={p.streak_len} />
+                  {inactive && (
+                    <span className="text-[11px] text-slate-400">
+                      {t("common.lastSeen")}: {formatDate(p.last_seen, lang)}
+                    </span>
+                  )}
+                </div>
               </div>
+              <FormPills form={p.form} dates={p.form_dates} scores={p.form_scores} />
             </div>
-            <FormPills form={p.form} />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ export default function WinRate() {
         })}
       />
       {data.ranking.length >= 3 && <Podium top={data.ranking.slice(0, 3)} />}
-      <RankTable rows={data.ranking} columns={columns} />
+      <RankTable rows={data.ranking} columns={columns} defaultSort="win_pct" />
     </div>
   );
 }

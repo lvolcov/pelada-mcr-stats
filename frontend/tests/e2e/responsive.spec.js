@@ -110,6 +110,21 @@ test.describe("Dashboard flows", () => {
     await expect(firstRow.getByText(/Douglas B/)).toBeVisible();
   });
 
+  test("attendance squares link to a match", async ({ page }) => {
+    await page.goto("/attendance");
+    await expect(page.getByRole("table")).toBeVisible();
+    // Present squares are links to /match/<date>.
+    await page.locator('a[href*="/match/"]').first().click();
+    await expect(page).toHaveURL(/\/match\/\d{4}-\d{2}-\d{2}$/);
+  });
+
+  test("MVP per-session entries link to matches", async ({ page }) => {
+    await page.goto("/mvp");
+    await expect(page.getByText(/Ranking de MVPs|MVP Ranking/).first()).toBeVisible();
+    await page.locator('a[href*="/match/"]').first().click();
+    await expect(page).toHaveURL(/\/match\/\d{4}-\d{2}-\d{2}$/);
+  });
+
   test("MVP page renders and pluralizes correctly", async ({ page }) => {
     await page.goto("/mvp");
     await expect(page.getByText(/Ranking de MVPs|MVP Ranking/).first()).toBeVisible();

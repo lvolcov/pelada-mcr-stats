@@ -215,17 +215,29 @@ def ga_rate(ds: Dataset) -> dict:
 
 
 def recent_form(ds: Dataset) -> list[dict]:
+    """Form over the last FORM_WINDOW *actual* sessions.
+
+    The window is the most recent regular session dates (global), so players who
+    haven't shown up lately drop down the list — the page is about who's hot *now*,
+    not who once had a good run.
+    """
+    sessions = _sessions(ds)
+    recent_dates = set(sessions[-FORM_WINDOW:])
+    last_session = sessions[-1] if sessions else None
     by_player = _rows_by_player(ds)
     out = []
     for name, rows in by_player.items():
-        rows_sorted = sorted(_regular(rows), key=lambda r: r.date)
-        if not rows_sorted:
+        reg = sorted(_regular(rows), key=lambda r: r.date)
+        if not reg:
             continue
-        letters = [_result_letter(r) for r in rows_sorted]
-        window = letters[-FORM_WINDOW:]
-        # Current streak from the most recent decided result.
+        # Results within the recent global window only.
+        recent = [r for r in reg if r.date in recent_dates]
+        window = [_result_letter(r) for r in recent]
+        points = sum(3 if x == "W" else 1 if x == "D" else 0 for x in window)
+        last_seen = reg[-1].date
+        # Current streak from the most recent decided results (over all regular games).
         streak_type, streak_len = None, 0
-        for letter in reversed(letters):
+        for letter in (_result_letter(r) for r in reversed(reg)):
             if letter == "-":
                 continue
             if streak_type is None:
@@ -234,21 +246,27 @@ def recent_form(ds: Dataset) -> list[dict]:
                 streak_len += 1
             else:
                 break
-        recent = rows_sorted[-FORM_WINDOW:]
-        points = sum(3 if x == "W" else 1 if x == "D" else 0 for x in window)
         out.append(
             {
                 "player": name,
                 "name": display_name(name),
-                "games": len(rows_sorted),
+                "games": len(reg),
+                "recent_games": len(recent),
                 "form": window,
                 "form_dates": [r.date.isoformat() for r in recent],
+                "form_scores": [r.score for r in recent],
                 "streak_type": streak_type,
                 "streak_len": streak_len,
                 "form_points": points,
+                "last_seen": last_seen.isoformat(),
+                "missed_last": bool(last_session and last_seen != last_session),
             }
         )
-    out.sort(key=lambda p: (p["form_points"], p["games"]), reverse=True)
+    # Active players first: most recent games, then points, then who played latest.
+    out.sort(
+        key=lambda p: (p["recent_games"], p["form_points"], p["last_seen"]),
+        reverse=True,
+    )
     return out
 
 
@@ -383,6 +401,7 @@ def mvp(ds: Dataset) -> dict:
 
 def attendance(ds: Dataset) -> dict:
     sessions = _sessions(ds)  # regular sessions only
+    by_date = _rows_by_date(ds)
     by_player = _rows_by_player(ds)
     present = {
         name: {r.date for r in rows if not r.mixed} for name, rows in by_player.items()
@@ -404,6 +423,9 @@ def attendance(ds: Dataset) -> dict:
         )
     return {
         "session_dates": [d.isoformat() for d in sessions],
+        "session_info": [
+            {"date": d.isoformat(), "score": by_date[d][0].score} for d in sessions
+        ],
         "total_sessions": len(sessions),
         "players": grid,
     }
@@ -480,6 +502,7 @@ def player_profile(ds: Dataset, name: str) -> dict | None:
     rate_rank = next((p["rank"] for p in sr if p["player"] == name), None)
 
     best_goals_game = max(rows, key=lambda r: r.goals)
+    recent = sorted(_regular(rows), key=lambda r: r.date)[-FORM_WINDOW:]
     return {
         **totals,
         "is_mensalista": name in ds.mensalistas,
@@ -493,13 +516,10 @@ def player_profile(ds: Dataset, name: str) -> dict | None:
             "goals": best_goals_game.goals,
             "assists": best_goals_game.assists,
         },
-        "form": _recent_form_for(rows),
+        "form": [_result_letter(r) for r in recent],
+        "form_dates": [r.date.isoformat() for r in recent],
+        "form_scores": [r.score for r in recent],
     }
-
-
-def _recent_form_for(rows: list[MatchRow]) -> list[str]:
-    rows_sorted = sorted(_regular(rows), key=lambda r: r.date)
-    return [_result_letter(r) for r in rows_sorted][-FORM_WINDOW:]
 
 
 def players_index(ds: Dataset) -> list[dict]:

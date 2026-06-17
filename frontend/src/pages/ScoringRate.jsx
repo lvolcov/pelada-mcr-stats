@@ -65,7 +65,7 @@ export default function ScoringRate() {
           </BarChart>
         </ResponsiveContainer>
       </Section>
-      <RankTable rows={data.ranking} columns={columns} />
+      <RankTable rows={data.ranking} columns={columns} defaultSort="goals_per_game" />
     </div>
   );
 }

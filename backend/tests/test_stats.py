@@ -62,6 +62,15 @@ def test_recent_form_window(dataset):
     form = stats.recent_form(dataset)
     assert all(len(p["form"]) <= 5 for p in form)
     assert all(c in {"W", "L", "D", "-"} for p in form for c in p["form"])
+    # form length matches games played within the recent window
+    assert all(len(p["form"]) == p["recent_games"] for p in form)
+    # Most-active players come first (recent_games non-increasing at the top).
+    assert form[0]["recent_games"] >= 1
+    # A player who hasn't played in the recent window has no recent games and
+    # therefore sorts below active ones (e.g. bruno, last seen 2026-03-23).
+    bruno = next(p for p in form if p["player"] == "bruno")
+    assert bruno["recent_games"] == 0
+    assert form.index(bruno) > 0
 
 
 def test_attendance_consistency(dataset):

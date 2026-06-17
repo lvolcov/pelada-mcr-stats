@@ -2,7 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { avatarColor, initials, medal } from "../lib/format";
+import { avatarColor, initials, medal, formatDate } from "../lib/format";
 
 export function PageHeader({ title, subtitle, children }) {
   return (
@@ -100,23 +100,40 @@ export function MensalistaBadge({ player, className = "" }) {
   );
 }
 
-export function FormPills({ form }) {
-  const { strings } = useApp();
+// Result pills (W/L/D/M). Pass `dates` (parallel to `form`) to make each pill a
+// tooltipped link to that match — but only where the pill isn't already nested in
+// another link.
+export function FormPills({ form, dates, scores }) {
+  const { strings, lang } = useApp();
   if (!form || form.length === 0)
     return <span className="text-xs text-slate-400">—</span>;
   return (
     <div className="flex gap-1">
-      {form.map((r, i) => (
-        <span
-          key={i}
-          className={`flex h-6 w-6 items-center justify-center rounded-md text-xs font-bold ${
-            RESULT_STYLE[r] || RESULT_STYLE["-"]
-          }`}
-          title={r}
-        >
-          {strings.results[r] || r}
-        </span>
-      ))}
+      {form.map((r, i) => {
+        const cls = `flex h-6 w-6 items-center justify-center rounded-md text-xs font-bold ${
+          RESULT_STYLE[r] || RESULT_STYLE["-"]
+        }`;
+        const label = strings.results[r] || r;
+        const date = dates?.[i];
+        if (date) {
+          const tip = `${formatDate(date, lang)}${scores?.[i] ? ` · ${scores[i]}` : ""}`;
+          return (
+            <Link
+              key={i}
+              to={`/match/${date}`}
+              title={tip}
+              className={`${cls} transition hover:ring-2 hover:ring-pitch-400`}
+            >
+              {label}
+            </Link>
+          );
+        }
+        return (
+          <span key={i} className={cls} title={label}>
+            {label}
+          </span>
+        );
+      })}
     </div>
   );
 }

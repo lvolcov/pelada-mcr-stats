@@ -44,8 +44,15 @@ The site runs in two ways from the same codebase:
 - **Mensalistas** — players with a fixed weekly spot are marked with a 📅 icon
   everywhere, making it easy to spot a season member who has stopped showing up.
   Driven by an editable `data/mensalistas.json`.
-- **Sortable everywhere** — every table sorts on any column; card/list pages
-  (players, form, MVP) have sort controls; match history has a cards/table toggle.
+- **Sortable everywhere** — every table sorts on any column (the active column is
+  highlighted and ranks renumber); card/list pages (players, form, MVP) have sort
+  controls; match history has a cards/table toggle.
+- **Clickable match references** — anywhere a match is referenced (attendance
+  squares, form pills, MVP-per-round, player game logs, homepage highlights) it's a
+  tooltipped link straight to that match's page.
+- **Recent form** is computed over the last 5 *actual* sessions, so players who've
+  stopped showing up drop to the bottom (they're not ranked on an old hot streak).
+- **Homepage charts** — top scorers (goals + assists) and a goals-per-session trend.
 - **Auto-refresh** — the backend re-reads the workbook (and `mensalistas.json`)
   whenever either changes. Replace the file, reload the page — no restart.
 - **Brazilian-Manchester branding** — Manchester worker-bee logo, locked to

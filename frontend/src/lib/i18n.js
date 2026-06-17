@@ -73,7 +73,7 @@ export const dict = {
     home: {
       heroTitle: "A pelada em números",
       heroSubtitle:
-        "Toda segunda a rapaziada brasileira se reúne em Manchester pra bater uma bola. Acompanhe gols, assistências, vitórias e muito mais.",
+        "Gols, assistências, vitórias e presença da nossa pelada de toda segunda-feira em Manchester.",
       totalGoals: "Gols na temporada",
       totalAssists: "Assistências",
       sessions: "Rodadas jogadas",
@@ -82,6 +82,8 @@ export const dict = {
       topAssister: "Garçom",
       busiest: "Rodada mais movimentada",
       explore: "Explorar dashboards",
+      topScorersChart: "Top 8 — gols e assistências",
+      trendChart: "Gols por rodada",
     },
     leaderboard: { title: "Placar Geral", subtitle: "Ranking geral de todos os jogadores." },
     winrate: {
@@ -93,8 +95,10 @@ export const dict = {
     ga: { title: "G+A por Jogo", subtitle: "Gols + assistências por jogo (mínimo de {min} jogos)." },
     form: {
       title: "Forma Recente",
-      subtitle: "Últimos 5 jogos de cada jogador. Ordenado por desempenho recente.",
+      subtitle:
+        "Desempenho nas últimas 5 rodadas. Quem não jogou recentemente aparece no fim.",
       streak: "Sequência",
+      recent: "Jogos recentes",
     },
     trend: {
       title: "Evolução da Temporada",
@@ -205,7 +209,7 @@ export const dict = {
     home: {
       heroTitle: "The pelada in numbers",
       heroSubtitle:
-        "Track goals, assists, wins and more — refreshed every Monday.",
+        "Goals, assists, wins and attendance from our Monday kickabout in Manchester.",
       totalGoals: "Goals this season",
       totalAssists: "Assists",
       sessions: "Sessions played",
@@ -214,6 +218,8 @@ export const dict = {
       topAssister: "Top assister",
       busiest: "Highest-scoring session",
       explore: "Explore dashboards",
+      topScorersChart: "Top 8 — goals & assists",
+      trendChart: "Goals per session",
     },
     leaderboard: { title: "Leaderboard", subtitle: "Overall ranking of every player." },
     winrate: {
@@ -225,8 +231,10 @@ export const dict = {
     ga: { title: "G+A per Game", subtitle: "Goals + assists per game (minimum {min} games)." },
     form: {
       title: "Recent Form",
-      subtitle: "Each player's last 5 games. Sorted by recent performance.",
+      subtitle:
+        "Performance over the last 5 sessions. Players who haven't shown up recently sink to the bottom.",
       streak: "Streak",
+      recent: "Recent games",
     },
     trend: {
       title: "Season Trend",

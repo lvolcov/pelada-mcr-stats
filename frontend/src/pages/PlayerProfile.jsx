@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   AreaChart,
   Area,
@@ -26,6 +26,7 @@ import {
 
 export default function PlayerProfile() {
   const { name } = useParams();
+  const navigate = useNavigate();
   const { t, lang, theme } = useApp();
   const { data, error, loading, reload } = useApi(() => api.player(name), [name]);
 
@@ -88,7 +89,7 @@ export default function PlayerProfile() {
             )}
           </div>
           <div className="mt-3 flex justify-center sm:justify-start">
-            <FormPills form={data.form} />
+            <FormPills form={data.form} dates={data.form_dates} scores={data.form_scores} />
           </div>
         </div>
       </div>
@@ -197,7 +198,9 @@ export default function PlayerProfile() {
               {data.game_log.map((g, i) => (
                 <tr
                   key={i}
-                  className="border-b border-slate-100 last:border-0 dark:border-slate-800/60"
+                  onClick={() => navigate(`/match/${g.date}`)}
+                  title={`${formatDate(g.date, lang)} · ${g.score} — ${t("match.open")}`}
+                  className="cursor-pointer border-b border-slate-100 transition last:border-0 hover:bg-slate-50 dark:border-slate-800/60 dark:hover:bg-slate-800/40"
                 >
                   <td className="px-3 py-2 whitespace-nowrap">{formatDate(g.date, lang)}</td>
                   <td className="px-3 py-2 font-medium">{g.score}</td>

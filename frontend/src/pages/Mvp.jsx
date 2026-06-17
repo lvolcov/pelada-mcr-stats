@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { api } from "../lib/api";
 import { useApi, useSort, formatDate } from "../lib/format";
@@ -83,25 +84,28 @@ export default function Mvp() {
           </div>
           <ul className="space-y-2">
             {perSession.map((s) => (
-              <li
-                key={s.date}
-                className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 px-3 py-2 dark:border-slate-800"
-              >
-                <div className="text-xs text-slate-400">
-                  <p>{formatDate(s.date, lang)}</p>
-                  <p className="font-bold text-slate-600 dark:text-slate-300">{s.score}</p>
-                </div>
-                {s.mvp ? (
-                  <div className="flex items-center gap-2">
-                    <div className="text-right text-xs text-slate-400">
-                      ⚽ {s.mvp.goals} · 🅰️ {s.mvp.assists}
-                    </div>
-                    <Avatar name={s.mvp.name} size="sm" to={`/player/${s.mvp.player}`} />
-                    <span className="text-sm font-semibold">{s.mvp.name}</span>
+              <li key={s.date}>
+                <Link
+                  to={`/match/${s.date}`}
+                  title={`${formatDate(s.date, lang)} · ${s.score} — ${t("match.open")}`}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 px-3 py-2 transition hover:border-pitch-400 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50"
+                >
+                  <div className="text-xs text-slate-400">
+                    <p>{formatDate(s.date, lang)}</p>
+                    <p className="font-bold text-slate-600 dark:text-slate-300">{s.score}</p>
                   </div>
-                ) : (
-                  <span className="text-xs text-slate-400">{t("common.noData")}</span>
-                )}
+                  {s.mvp ? (
+                    <div className="flex items-center gap-2">
+                      <div className="text-right text-xs text-slate-400">
+                        ⚽ {s.mvp.goals} · 🅰️ {s.mvp.assists}
+                      </div>
+                      <Avatar name={s.mvp.name} size="sm" />
+                      <span className="text-sm font-semibold">{s.mvp.name}</span>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400">{t("common.noData")}</span>
+                  )}
+                </Link>
               </li>
             ))}
           </ul>

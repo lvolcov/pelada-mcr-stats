@@ -31,7 +31,7 @@ export default function Leaderboard() {
   return (
     <div>
       <PageHeader title={t("leaderboard.title")} subtitle={t("leaderboard.subtitle")} />
-      <RankTable rows={data} columns={columns} />
+      <RankTable rows={data} columns={columns} defaultSort="goals" />
     </div>
   );
 }
