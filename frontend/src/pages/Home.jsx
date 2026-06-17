@@ -50,6 +50,7 @@ export default function Home() {
 
   const data = ov.data;
   const grid = theme === "dark" ? "#1e293b" : "#e2e8f0";
+  const season = data.parsed_at?.slice(0, 4) || "";
 
   const topScorers = (lb.data || [])
     .slice()
@@ -66,27 +67,21 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <section className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 px-6 py-9 text-center text-white shadow-xl sm:py-12">
-        {/* soft depth glows */}
-        <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-40 w-72 -translate-x-1/2 -translate-y-1/3 rounded-full bg-white/15 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -left-10 -z-10 h-48 w-48 rounded-full bg-amber-300/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -right-10 -z-10 h-48 w-48 rounded-full bg-emerald-300/25 blur-3xl" />
-
-        <div className="relative mx-auto flex max-w-md flex-col items-center animate-fade-in">
-          {/* mascot */}
-          <div className="relative mb-4">
-            <div className="absolute inset-0 -z-10 scale-150 rounded-full bg-white/25 blur-2xl" />
-            <Logo className="h-20 w-20 drop-shadow-[0_8px_22px_rgba(0,0,0,0.4)] sm:h-24 sm:w-24" />
-          </div>
-          <h1 className="font-display text-2xl font-extrabold leading-tight drop-shadow-sm sm:text-4xl">
-            {t("appName")}
+      <section className="relative isolate overflow-hidden rounded-3xl border border-slate-200 bg-white px-6 py-10 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:px-10 sm:py-14">
+        <Logo className="pointer-events-none absolute -right-5 top-1/2 h-40 w-40 -translate-y-1/2 opacity-[0.22] dark:opacity-20 sm:h-52 sm:w-52" />
+        <div className="relative max-w-[15rem] animate-fade-in sm:max-w-md">
+          <p className="text-[0.7rem] font-bold uppercase tracking-[0.25em] text-pitch-600 dark:text-pitch-400">
+            {t("common.season")} {season}
+          </p>
+          <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+            Pelada <span className="text-pitch-600 dark:text-pitch-400">MCR</span>
           </h1>
-          <p className="mt-2 max-w-xs text-sm font-medium text-pitch-50/95 sm:max-w-sm sm:text-base">
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 sm:text-base">
             {t("appTagline")}
           </p>
           <Link
             to="/leaderboard"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-2.5 text-sm font-bold text-pitch-700 shadow-lg shadow-emerald-950/30 transition hover:bg-pitch-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-pitch-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-pitch-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-pitch-400"
           >
             {t("home.explore")} →
           </Link>
