@@ -110,6 +110,20 @@ test.describe("Dashboard flows", () => {
     await expect(firstRow.getByText(/Douglas B/)).toBeVisible();
   });
 
+  test("recent form shows absences and a legend", async ({ page }) => {
+    await page.goto("/form");
+    await expect(page.getByRole("heading", { name: /Forma Recente|Recent Form/ })).toBeVisible();
+    // Legend explains the absent marker; at least one ✕ pill is shown.
+    await expect(page.getByText(/Não compareceu|Did not attend/).first()).toBeVisible();
+    await expect(page.getByText("✕").first()).toBeVisible();
+  });
+
+  test("attendance table has a rank column", async ({ page }) => {
+    await page.goto("/attendance");
+    const firstHeader = page.getByRole("table").locator("thead th").first();
+    await expect(firstHeader).toHaveText("#");
+  });
+
   test("attendance squares link to a match", async ({ page }) => {
     await page.goto("/attendance");
     await expect(page.getByRole("table")).toBeVisible();

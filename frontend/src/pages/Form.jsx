@@ -36,6 +36,17 @@ export default function Form() {
     { k: "name", label: t("common.name") },
   ];
 
+  const legend = [
+    { cls: "bg-pitch-600 text-white", sym: t("results.W"), label: t("common.wins") },
+    { cls: "bg-slate-400 text-white dark:bg-slate-600", sym: t("results.D"), label: t("common.draws") },
+    { cls: "bg-rose-500 text-white", sym: t("results.L"), label: t("common.losses") },
+    {
+      cls: "border border-dashed border-slate-300 text-slate-400 dark:border-slate-600",
+      sym: "✕",
+      label: t("form.absent"),
+    },
+  ];
+
   return (
     <div>
       <PageHeader title={t("form.title")} subtitle={t("form.subtitle")} />
@@ -54,6 +65,19 @@ export default function Form() {
               {sortKey === o.k ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
             </span>
           </button>
+        ))}
+      </div>
+      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500">
+        <span className="font-medium">{t("form.legend")}:</span>
+        {legend.map((l) => (
+          <span key={l.label} className="inline-flex items-center gap-1.5">
+            <span
+              className={`flex h-5 w-5 items-center justify-center rounded text-[11px] font-bold ${l.cls}`}
+            >
+              {l.sym}
+            </span>
+            {l.label}
+          </span>
         ))}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

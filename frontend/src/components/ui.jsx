@@ -81,6 +81,8 @@ const RESULT_STYLE = {
   L: "bg-rose-500 text-white",
   D: "bg-slate-400 text-white dark:bg-slate-600",
   M: "bg-amber-500 text-white",
+  // Absent: outlined, muted — clearly "didn't play" rather than a result.
+  A: "border border-dashed border-slate-300 text-slate-400 dark:border-slate-600",
   "-": "bg-slate-200 text-slate-400 dark:bg-slate-800",
 };
 
@@ -110,13 +112,15 @@ export function FormPills({ form, dates, scores }) {
   return (
     <div className="flex gap-1">
       {form.map((r, i) => {
+        const absent = r === "A";
         const cls = `flex h-6 w-6 items-center justify-center rounded-md text-xs font-bold ${
           RESULT_STYLE[r] || RESULT_STYLE["-"]
         }`;
-        const label = strings.results[r] || r;
+        const label = absent ? "✕" : strings.results[r] || r;
         const date = dates?.[i];
         if (date) {
-          const tip = `${formatDate(date, lang)}${scores?.[i] ? ` · ${scores[i]}` : ""}`;
+          const base = `${formatDate(date, lang)}${scores?.[i] ? ` · ${scores[i]}` : ""}`;
+          const tip = absent ? `${base} — ${strings.form.absent}` : base;
           return (
             <Link
               key={i}
@@ -129,7 +133,7 @@ export function FormPills({ form, dates, scores }) {
           );
         }
         return (
-          <span key={i} className={cls} title={label}>
+          <span key={i} className={cls} title={absent ? strings.form.absent : label}>
             {label}
           </span>
         );

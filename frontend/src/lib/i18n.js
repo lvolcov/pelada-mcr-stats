@@ -72,8 +72,7 @@ export const dict = {
     },
     home: {
       heroTitle: "A pelada em números",
-      heroSubtitle:
-        "Gols, assistências, vitórias e presença da nossa pelada de toda segunda-feira em Manchester.",
+      heroSubtitle: "",
       totalGoals: "Gols na temporada",
       totalAssists: "Assistências",
       sessions: "Rodadas jogadas",
@@ -99,6 +98,8 @@ export const dict = {
         "Desempenho nas últimas 5 rodadas. Quem não jogou recentemente aparece no fim.",
       streak: "Sequência",
       recent: "Jogos recentes",
+      absent: "Não compareceu",
+      legend: "Legenda",
     },
     trend: {
       title: "Evolução da Temporada",
@@ -208,8 +209,7 @@ export const dict = {
     },
     home: {
       heroTitle: "The pelada in numbers",
-      heroSubtitle:
-        "Goals, assists, wins and attendance from our Monday kickabout in Manchester.",
+      heroSubtitle: "",
       totalGoals: "Goals this season",
       totalAssists: "Assists",
       sessions: "Sessions played",
@@ -235,6 +235,8 @@ export const dict = {
         "Performance over the last 5 sessions. Players who haven't shown up recently sink to the bottom.",
       streak: "Streak",
       recent: "Recent games",
+      absent: "Did not attend",
+      legend: "Legend",
     },
     trend: {
       title: "Season Trend",

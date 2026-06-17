@@ -60,16 +60,19 @@ def test_scoring_rate_threshold(dataset):
 
 def test_recent_form_window(dataset):
     form = stats.recent_form(dataset)
-    assert all(len(p["form"]) <= 5 for p in form)
-    assert all(c in {"W", "L", "D", "-"} for p in form for c in p["form"])
-    # form length matches games played within the recent window
-    assert all(len(p["form"]) == p["recent_games"] for p in form)
-    # Most-active players come first (recent_games non-increasing at the top).
+    # One pill per session in the window (5), including absences ("A").
+    assert all(len(p["form"]) == 5 for p in form)
+    assert all(c in {"W", "L", "D", "M", "A"} for p in form for c in p["form"])
+    # recent_games counts only attended sessions in the window.
+    assert all(p["recent_games"] == sum(1 for x in p["form"] if x != "A") for p in form)
     assert form[0]["recent_games"] >= 1
-    # A player who hasn't played in the recent window has no recent games and
-    # therefore sorts below active ones (e.g. bruno, last seen 2026-03-23).
+    # Absences are shown, not collapsed: lucas volcov missed 05-04 and 06-01.
+    lucas = next(p for p in form if p["player"] == "lucas volcov")
+    assert lucas["form"] == ["A", "W", "W", "A", "W"]
+    # A player inactive across the whole window is all-absent and sorts low.
     bruno = next(p for p in form if p["player"] == "bruno")
     assert bruno["recent_games"] == 0
+    assert bruno["form"] == ["A", "A", "A", "A", "A"]
     assert form.index(bruno) > 0
 
 

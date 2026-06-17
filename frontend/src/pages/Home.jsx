@@ -76,7 +76,9 @@ export default function Home() {
           <h1 className="mt-2 max-w-2xl font-display text-3xl font-extrabold leading-tight sm:text-5xl">
             {t("home.heroTitle")}
           </h1>
-          <p className="mt-3 max-w-xl text-pitch-50/90">{t("home.heroSubtitle")}</p>
+          {t("home.heroSubtitle") && (
+            <p className="mt-3 max-w-xl text-pitch-50/90">{t("home.heroSubtitle")}</p>
+          )}
           <Link
             to="/leaderboard"
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-pitch-700 shadow transition hover:bg-pitch-50"

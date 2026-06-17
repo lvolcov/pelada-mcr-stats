@@ -222,7 +222,9 @@ def recent_form(ds: Dataset) -> list[dict]:
     not who once had a good run.
     """
     sessions = _sessions(ds)
-    recent_dates = set(sessions[-FORM_WINDOW:])
+    window = sessions[-FORM_WINDOW:]  # chronological list of the last N session dates
+    by_date = _rows_by_date(ds)
+    window_scores = {d: by_date[d][0].score for d in window}
     last_session = sessions[-1] if sessions else None
     by_player = _rows_by_player(ds)
     out = []
@@ -230,10 +232,12 @@ def recent_form(ds: Dataset) -> list[dict]:
         reg = sorted(_regular(rows), key=lambda r: r.date)
         if not reg:
             continue
-        # Results within the recent global window only.
-        recent = [r for r in reg if r.date in recent_dates]
-        window = [_result_letter(r) for r in recent]
-        points = sum(3 if x == "W" else 1 if x == "D" else 0 for x in window)
+        played = {r.date: r for r in reg}
+        # One entry per session in the window; "A" marks a session the player missed,
+        # so absences are visible instead of silently collapsed.
+        form = [_result_letter(played[d]) if d in played else "A" for d in window]
+        recent_games = sum(1 for x in form if x != "A")
+        points = sum(3 if x == "W" else 1 if x == "D" else 0 for x in form)
         last_seen = reg[-1].date
         # Current streak from the most recent decided results (over all regular games).
         streak_type, streak_len = None, 0
@@ -251,10 +255,10 @@ def recent_form(ds: Dataset) -> list[dict]:
                 "player": name,
                 "name": display_name(name),
                 "games": len(reg),
-                "recent_games": len(recent),
-                "form": window,
-                "form_dates": [r.date.isoformat() for r in recent],
-                "form_scores": [r.score for r in recent],
+                "recent_games": recent_games,
+                "form": form,
+                "form_dates": [d.isoformat() for d in window],
+                "form_scores": [window_scores[d] for d in window],
                 "streak_type": streak_type,
                 "streak_len": streak_len,
                 "form_points": points,
