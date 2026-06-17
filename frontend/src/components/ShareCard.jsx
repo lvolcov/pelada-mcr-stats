@@ -221,7 +221,7 @@ export function PlayerShareCard({ data, lang, t }) {
         </div>
         {data.goals_rank && (
           <span className="text-xs font-semibold uppercase tracking-widest text-pitch-100">
-            #{data.goals_rank} {t("common.goals")}
+            {t("share.ranking")} · #{data.goals_rank}
           </span>
         )}
       </header>
