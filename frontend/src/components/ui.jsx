@@ -4,6 +4,25 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { avatarColor, initials, medal, formatDate } from "../lib/format";
 
+// The brand logo (transparent PNG). Use <Logo> directly on light/coloured
+// surfaces; <LogoBadge> wraps it in a white chip so the black linework stays
+// legible on dark backgrounds.
+const LOGO_SRC = `${import.meta.env.BASE_URL}logo.png`;
+
+export function Logo({ className = "" }) {
+  return <img src={LOGO_SRC} alt="Pelada MCR" className={`object-contain ${className}`} />;
+}
+
+export function LogoBadge({ className = "", imgClassName = "h-[78%] w-[78%]" }) {
+  return (
+    <span
+      className={`flex items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5 ${className}`}
+    >
+      <Logo className={imgClassName} />
+    </span>
+  );
+}
+
 export function PageHeader({ title, subtitle, children }) {
   return (
     <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

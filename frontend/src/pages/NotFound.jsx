@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import { LogoBadge } from "../components/ui";
 
 export default function NotFound() {
   const { t } = useApp();
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="text-6xl">⚽</div>
+      <LogoBadge className="h-20 w-20" />
       <h1 className="mt-4 font-display text-4xl font-extrabold">404</h1>
       <Link
         to="/"
