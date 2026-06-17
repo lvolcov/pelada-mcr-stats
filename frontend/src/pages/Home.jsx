@@ -50,7 +50,6 @@ export default function Home() {
 
   const data = ov.data;
   const grid = theme === "dark" ? "#1e293b" : "#e2e8f0";
-  const season = data.parsed_at?.slice(0, 4) || "";
 
   const topScorers = (lb.data || [])
     .slice()
@@ -93,11 +92,7 @@ export default function Home() {
         <Logo className="pointer-events-none absolute -right-3 -top-3 h-24 w-24 opacity-90 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
 
         <div className="relative animate-fade-in">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.2em] ring-1 ring-white/25 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
-            {t("common.season")} {season}
-          </span>
-          <h1 className="mt-3 max-w-[15rem] font-display text-lg font-bold leading-snug drop-shadow-sm sm:max-w-md sm:text-2xl">
+          <h1 className="max-w-[15rem] font-display text-lg font-bold leading-snug drop-shadow-sm sm:max-w-md sm:text-2xl">
             {t("appTagline")}
           </h1>
           <div className="mt-6 flex flex-wrap items-center gap-3">
