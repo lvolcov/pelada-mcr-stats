@@ -97,7 +97,7 @@ export default function Home() {
             <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
             {t("common.season")} {season}
           </span>
-          <h1 className="mt-4 max-w-[14rem] font-display text-3xl font-extrabold leading-[1.1] drop-shadow-sm sm:max-w-xl sm:text-[3.25rem]">
+          <h1 className="mt-3 max-w-[15rem] font-display text-lg font-bold leading-snug drop-shadow-sm sm:max-w-md sm:text-2xl">
             {t("appTagline")}
           </h1>
           <div className="mt-6 flex flex-wrap items-center gap-3">
