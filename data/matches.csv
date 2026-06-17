@@ -12,7 +12,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-01-19,4 x 2,marcus,1,0,1,0,0,0
 2026-01-19,4 x 2,douglas b,1,1,1,0,0,0
 2026-01-19,4 x 2,lucas volcov,1,0,1,0,0,0
-2026-01-19,4 x 2,gabriel diretoria,1,0,1,0,0,0
+2026-01-19,4 x 2,gabriel,1,0,1,0,0,0
 2026-01-26,8 x 4,marcus,1,2,0,1,0,0
 2026-01-26,8 x 4,hernani,1,0,0,1,0,0
 2026-01-26,8 x 4,junior,0,0,0,1,0,0
@@ -22,12 +22,12 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-01-26,8 x 4,douglas b,0,0,0,1,0,0
 2026-01-26,8 x 4,thiago,0,0,1,0,0,0
 2026-01-26,8 x 4,miguel saddi,0,1,1,0,0,0
-2026-01-26,8 x 4,gabriel diretoria,1,1,1,0,0,0
+2026-01-26,8 x 4,gabriel,1,1,1,0,0,0
 2026-01-26,8 x 4,diego,1,2,1,0,0,0
 2026-01-26,8 x 4,guilherme,1,1,1,0,0,0
 2026-01-26,8 x 4,luciano,2,0,1,0,0,0
 2026-01-26,8 x 4,miguel miranda,3,0,1,0,0,0
-2026-02-02,10 x 3,gabriel diretoria,0,0,0,1,0,0
+2026-02-02,10 x 3,gabriel,0,0,0,1,0,0
 2026-02-02,10 x 3,jonathan,2,1,0,1,0,0
 2026-02-02,10 x 3,leandro,0,0,0,1,0,0
 2026-02-02,10 x 3,thiago,0,0,0,1,0,0
@@ -47,7 +47,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-02-09,4 x 4,luciano,1,0,0,0,1,0
 2026-02-09,4 x 4,osmar,1,0,0,0,1,0
 2026-02-09,4 x 4,jonathan,0,0,0,0,1,0
-2026-02-09,4 x 4,gabriel diretoria,0,1,0,0,1,0
+2026-02-09,4 x 4,gabriel,0,1,0,0,1,0
 2026-02-09,4 x 4,thiago,0,0,0,0,1,0
 2026-02-09,4 x 4,carlao,2,0,0,0,1,0
 2026-02-09,4 x 4,hernani,1,0,0,0,1,0
@@ -61,7 +61,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-02-16,12 x 8,marcus,4,1,0,1,0,0
 2026-02-16,12 x 8,carto,1,0,0,1,0,0
 2026-02-16,12 x 8,joao,0,1,0,1,0,0
-2026-02-16,12 x 8,gabriel diretoria,0,2,0,1,0,0
+2026-02-16,12 x 8,gabriel,0,2,0,1,0,0
 2026-02-16,12 x 8,junior,6,3,1,0,0,0
 2026-02-16,12 x 8,douglas b,3,3,1,0,0,0
 2026-02-16,12 x 8,renan,2,3,1,0,0,0
@@ -70,7 +70,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-02-16,12 x 8,jonathan,0,2,1,0,0,0
 2026-02-16,12 x 8,lucas volcov,0,0,1,0,0,0
 2026-02-23,3 times,alisson,0,0,0,0,0,1
-2026-02-23,3 times,gabriel diretoria,1,1,0,0,0,1
+2026-02-23,3 times,gabriel,1,1,0,0,0,1
 2026-02-23,3 times,miguel saddi,0,0,0,0,0,1
 2026-02-23,3 times,diego,0,0,0,0,0,1
 2026-02-23,3 times,junior,2,1,0,0,0,1
@@ -96,7 +96,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-03-02,5 x 3,guilherme,1,0,0,1,0,0
 2026-03-02,5 x 3,miguel miranda,0,0,0,1,0,0
 2026-03-02,5 x 3,douglas,1,0,0,1,0,0
-2026-03-02,5 x 3,gabriel diretoria,0,3,1,0,0,0
+2026-03-02,5 x 3,gabriel,0,3,1,0,0,0
 2026-03-02,5 x 3,joao,2,2,1,0,0,0
 2026-03-02,5 x 3,diego,1,0,1,0,0,0
 2026-03-02,5 x 3,carlao,1,0,1,0,0,0
@@ -104,7 +104,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-03-02,5 x 3,marcus,0,0,1,0,0,0
 2026-03-02,5 x 3,osmar,0,0,1,0,0,0
 2026-03-09,5 x 4,bruno,0,0,1,0,0,0
-2026-03-09,5 x 4,gabriel r,2,0,1,0,0,0
+2026-03-09,5 x 4,gabriel rosetto,2,0,1,0,0,0
 2026-03-09,5 x 4,marcus,2,1,1,0,0,0
 2026-03-09,5 x 4,guilherme,0,0,1,0,0,0
 2026-03-09,5 x 4,carlao,0,0,1,0,0,0
@@ -114,11 +114,11 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-03-09,5 x 4,douglas b,1,1,0,1,0,0
 2026-03-09,5 x 4,lucas volcov,0,0,0,1,0,0
 2026-03-09,5 x 4,diego,0,0,0,1,0,0
-2026-03-09,5 x 4,gabriel diretoria,1,0,0,1,0,0
+2026-03-09,5 x 4,gabriel,1,0,0,1,0,0
 2026-03-09,5 x 4,luciano,0,0,0,1,0,0
 2026-03-09,5 x 4,junior,2,1,0,1,0,0
 2026-03-16,5 x 3,alisson,0,0,0,1,0,0
-2026-03-16,5 x 3,gabriel diretoria,2,0,0,1,0,0
+2026-03-16,5 x 3,gabriel,2,0,0,1,0,0
 2026-03-16,5 x 3,diego,0,0,0,1,0,0
 2026-03-16,5 x 3,luciano,0,0,0,1,0,0
 2026-03-16,5 x 3,joao,0,1,0,1,0,0
@@ -160,7 +160,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-04-13,9 x 7,leandro,0,0,1,0,0,0
 2026-04-13,9 x 7,diego,3,1,1,0,0,0
 2026-04-13,9 x 7,douglas b,1,1,1,0,0,0
-2026-04-13,9 x 7,gabriel diretoria,1,1,1,0,0,0
+2026-04-13,9 x 7,gabriel,1,1,1,0,0,0
 2026-04-13,9 x 7,guilherme,0,2,1,0,0,0
 2026-04-13,9 x 7,lucas volcov,1,0,1,0,0,0
 2026-04-13,9 x 7,miguel miranda,1,1,1,0,0,0
@@ -189,7 +189,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-04-27,6 x 6,joao,1,1,0,0,1,0
 2026-04-27,6 x 6,thiago,0,0,0,0,1,0
 2026-04-27,6 x 6,leandro,2,0,0,0,1,0
-2026-04-27,6 x 6,gabriel diretoria,1,0,0,0,1,0
+2026-04-27,6 x 6,gabriel,1,0,0,0,1,0
 2026-04-27,6 x 6,douglas b,1,3,0,0,1,0
 2026-04-27,6 x 6,miguel miranda,1,1,0,0,1,0
 2026-04-27,6 x 6,diego,0,2,0,0,1,0
@@ -210,13 +210,13 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-05-04,2 x 3,leandro,0,0,1,0,0,0
 2026-05-04,2 x 3,miguel saddi,0,0,1,0,0,0
 2026-05-04,2 x 3,andrew,0,0,1,0,0,0
-2026-05-04,2 x 3,gabriel diretoria,3,2,1,0,0,0
+2026-05-04,2 x 3,gabriel,3,2,1,0,0,0
 2026-05-04,2 x 3,osmar,0,2,1,0,0,0
 2026-05-04,2 x 3,junior,2,1,1,0,0,0
 2026-05-11,4 x 5,leandro,0,2,0,1,0,0
 2026-05-11,4 x 5,andrew,0,0,0,1,0,0
 2026-05-11,4 x 5,diego,1,0,0,1,0,0
-2026-05-11,4 x 5,gabriel diretoria,0,1,0,1,0,0
+2026-05-11,4 x 5,gabriel,0,1,0,1,0,0
 2026-05-11,4 x 5,daniel,1,0,0,1,0,0
 2026-05-11,4 x 5,lucas lopes,1,0,0,1,0,0
 2026-05-11,4 x 5,douglas b,1,1,0,1,0,0
@@ -237,14 +237,14 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-05-18,6 x 5,alisson,0,0,0,1,0,0
 2026-05-18,6 x 5,hernani,0,0,0,1,0,0
 2026-05-18,6 x 5,diego,1,0,0,1,0,0
-2026-05-18,6 x 5,gabriel diretoria,2,1,0,1,0,0
+2026-05-18,6 x 5,gabriel,2,1,0,1,0,0
 2026-05-18,6 x 5,joao,0,0,0,1,0,0
 2026-05-18,6 x 5,miguel miranda,2,0,0,1,0,0
 2026-05-18,6 x 5,douglas b,0,3,0,1,0,0
 2026-06-01,5 x 3,alisson,0,0,0,1,0,0
 2026-06-01,5 x 3,miguel saddi,0,1,0,1,0,0
 2026-06-01,5 x 3,hernani,1,0,0,1,0,0
-2026-06-01,5 x 3,gabriel diretoria,1,0,0,1,0,0
+2026-06-01,5 x 3,gabriel,1,0,0,1,0,0
 2026-06-01,5 x 3,pedro,0,0,0,1,0,0
 2026-06-01,5 x 3,diego,0,1,0,1,0,0
 2026-06-01,5 x 3,joao,1,0,0,1,0,0
@@ -260,7 +260,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-06-08,9 x 6,lucas volcov,1,2,1,0,0,0
 2026-06-08,9 x 6,andrew,1,0,1,0,0,0
 2026-06-08,9 x 6,guilherme,1,1,1,0,0,0
-2026-06-08,9 x 6,gabriel diretoria,3,0,1,0,0,0
+2026-06-08,9 x 6,gabriel,3,0,1,0,0,0
 2026-06-08,9 x 6,douglas,3,2,1,0,0,0
 2026-06-08,9 x 6,miguel saddi,0,1,0,1,0,0
 2026-06-08,9 x 6,marcus,2,0,0,1,0,0
@@ -277,7 +277,7 @@ date,score,player,goals,assists,win,loss,draw,mixed
 2026-06-15,3 x 2,joao,0,0,1,0,0,0
 2026-06-15,3 x 2,andrew,0,0,1,0,0,0
 2026-06-15,3 x 2,pedro,0,0,0,1,0,0
-2026-06-15,3 x 2,gabriel diretoria,1,1,0,1,0,0
+2026-06-15,3 x 2,gabriel,1,1,0,1,0,0
 2026-06-15,3 x 2,hernani,0,0,0,1,0,0
 2026-06-15,3 x 2,jonathan,1,0,0,1,0,0
 2026-06-15,3 x 2,leandro,0,0,0,1,0,0
