@@ -50,6 +50,7 @@ export default function Home() {
 
   const data = ov.data;
   const grid = theme === "dark" ? "#1e293b" : "#e2e8f0";
+  const season = data.parsed_at?.slice(0, 4) || "";
 
   const topScorers = (lb.data || [])
     .slice()
@@ -66,26 +67,53 @@ export default function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-700 via-pitch-600 to-emerald-500 p-8 text-white shadow-lg sm:p-12">
-        <Logo className="pointer-events-none absolute right-4 top-1/2 hidden h-40 w-40 -translate-y-1/2 opacity-95 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:block sm:h-48 sm:w-48" />
-        <Logo className="pointer-events-none absolute -right-3 -top-3 h-28 w-28 opacity-90 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
-        <div className="absolute -bottom-12 -left-12 h-52 w-52 rounded-full bg-amber-300 opacity-20 blur-3xl" />
+      <section className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-pitch-800 via-pitch-600 to-emerald-500 p-6 text-white shadow-xl sm:p-12">
+        {/* football-pitch motif */}
+        <svg
+          viewBox="0 0 400 200"
+          preserveAspectRatio="xMidYMid slice"
+          className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-white/[0.07]"
+          aria-hidden="true"
+        >
+          <line x1="200" y1="0" x2="200" y2="200" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="200" cy="100" r="46" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="200" cy="100" r="3" fill="currentColor" />
+          <rect x="-1" y="58" width="46" height="84" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <rect x="355" y="58" width="46" height="84" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+        {/* glows */}
+        <div className="pointer-events-none absolute -right-20 -top-24 -z-10 h-64 w-64 rounded-full bg-emerald-300/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -left-12 -z-10 h-56 w-56 rounded-full bg-amber-300/25 blur-3xl" />
+
+        {/* bee with halo */}
+        <div className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 sm:block">
+          <div className="absolute inset-2 rounded-full bg-white/15 blur-2xl" />
+          <Logo className="relative h-44 w-44 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]" />
+        </div>
+        <Logo className="pointer-events-none absolute -right-3 -top-3 h-24 w-24 opacity-90 drop-shadow-[0_4px_16px_rgba(0,0,0,0.35)] sm:hidden" />
+
         <div className="relative animate-fade-in">
-          <p className="max-w-[13rem] text-sm font-semibold uppercase tracking-widest text-pitch-100 sm:max-w-none">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.2em] ring-1 ring-white/25 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
+            {t("common.season")} {season}
+          </span>
+          <h1 className="mt-4 max-w-[14rem] font-display text-3xl font-extrabold leading-[1.1] drop-shadow-sm sm:max-w-xl sm:text-[3.25rem]">
             {t("appTagline")}
-          </p>
-          <h1 className="mt-2 hidden max-w-2xl font-display text-3xl font-extrabold leading-tight sm:block sm:text-5xl">
-            {t("home.heroTitle")}
           </h1>
-          {t("home.heroSubtitle") && (
-            <p className="mt-3 max-w-xl text-pitch-50/90">{t("home.heroSubtitle")}</p>
-          )}
-          <Link
-            to="/leaderboard"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-pitch-700 shadow transition hover:bg-pitch-50"
-          >
-            {t("home.explore")} →
-          </Link>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              to="/leaderboard"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-pitch-700 shadow-lg shadow-emerald-950/30 transition hover:bg-pitch-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              {t("home.explore")} →
+            </Link>
+            <Link
+              to="/players"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/40 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              {t("nav.players")}
+            </Link>
+          </div>
         </div>
       </section>
 
