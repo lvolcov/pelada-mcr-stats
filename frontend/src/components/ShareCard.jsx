@@ -58,7 +58,9 @@ function StarIcon({ className = "" }) {
 }
 
 export function MatchShareCard({ data, lang, t }) {
-  const [photoOk, setPhotoOk] = useState(false);
+  // "loading" | "ok" | "error" — once a photo errors we stop rendering the
+  // <img> entirely, otherwise a broken src makes the PNG export hang.
+  const [photo, setPhoto] = useState("loading");
   const photoSrc = `${import.meta.env.BASE_URL}photos/${data.date}.jpg`;
   const star = data.mixed ? data.highlight : data.mvp;
 
@@ -100,30 +102,32 @@ export function MatchShareCard({ data, lang, t }) {
         {/* Hero: match photo, or a branded panel when there's none */}
         <div className="relative mx-5 shrink-0 overflow-hidden rounded-2xl bg-pitch-900/50 ring-1 ring-white/15">
           <div className="aspect-[16/10] w-full">
-            <img
-              src={photoSrc}
-              alt=""
-              onLoad={() => setPhotoOk(true)}
-              onError={() => setPhotoOk(false)}
-              className={`h-full w-full object-cover transition-opacity ${photoOk ? "opacity-100" : "opacity-0"}`}
-            />
+            {photo !== "error" && (
+              <img
+                src={photoSrc}
+                alt=""
+                onLoad={() => setPhoto("ok")}
+                onError={() => setPhoto("error")}
+                className={`h-full w-full object-cover transition-opacity ${photo === "ok" ? "opacity-100" : "opacity-0"}`}
+              />
+            )}
           </div>
-          {!photoOk && (
+          {photo !== "ok" && (
             <Logo className="pointer-events-none absolute right-2 top-1/2 h-28 w-28 -translate-y-1/2 opacity-20" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-pitch-900/95 via-pitch-900/25 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between px-4 pb-3">
-            <div>
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-4 pb-3">
+            <div className="shrink-0">
               {data.mixed && (
                 <span className="mb-1 inline-block rounded-full bg-amber-400 px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-amber-950">
                   {t("match.mixedTeams")}
                 </span>
               )}
-              <p className="font-display text-5xl font-extrabold leading-none drop-shadow-lg">
+              <p className="whitespace-nowrap font-display text-5xl font-extrabold leading-none drop-shadow-lg">
                 {data.score}
               </p>
             </div>
-            <div className="text-right text-[0.65rem] font-semibold uppercase tracking-wide text-white/80">
+            <div className="min-w-0 text-right text-[0.65rem] font-semibold uppercase tracking-wide text-white/80">
               <p>{data.player_count} {t("matches.present")}</p>
               <p className="tabular-nums">{data.total_player_goals} G · {data.total_player_assists} A</p>
             </div>
@@ -302,6 +306,49 @@ export function PlayerShareCard({ data, lang, t }) {
   );
 }
 
+// Build self-contained @font-face CSS for the page's Google Fonts so the
+// exported image renders with the real fonts. The Google stylesheet is
+// cross-origin (html-to-image can't read it from document.styleSheets), and
+// the rasterised SVG can't load external URLs — so we fetch the stylesheet
+// AND inline every font file as a data URI. Cached after first use; returns
+// "" if anything fails (export still works, just with fallback fonts).
+let _fontCssCache;
+async function getEmbeddedFontCss() {
+  if (_fontCssCache !== undefined) return _fontCssCache;
+  try {
+    const links = [
+      ...document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]'),
+    ];
+    const parts = await Promise.all(
+      links.map((l) => fetch(l.href).then((r) => (r.ok ? r.text() : "")).catch(() => ""))
+    );
+    let css = parts.join("\n");
+
+    const urls = [...new Set([...css.matchAll(/url\((https:\/\/[^)]+)\)/g)].map((m) => m[1]))];
+    const pairs = await Promise.all(
+      urls.map(async (u) => {
+        try {
+          const blob = await fetch(u).then((r) => r.blob());
+          const dataUri = await new Promise((res, rej) => {
+            const fr = new FileReader();
+            fr.onload = () => res(fr.result);
+            fr.onerror = rej;
+            fr.readAsDataURL(blob);
+          });
+          return [u, dataUri];
+        } catch {
+          return [u, null];
+        }
+      })
+    );
+    for (const [u, dataUri] of pairs) if (dataUri) css = css.split(u).join(dataUri);
+    _fontCssCache = css;
+  } catch {
+    _fontCssCache = "";
+  }
+  return _fontCssCache;
+}
+
 // Full-viewport overlay that frames the card at phone proportions and dims the
 // page behind it. The card itself (cardRef) is captured to a PNG for sharing,
 // so the close/save chrome lives outside it and never ends up in the image.
@@ -315,9 +362,18 @@ export function ShareOverlay({ onClose, label, filename, shareTitle, saveLabel, 
     if (!node || busy) return;
     setBusy(true);
     try {
-      // Two passes: web fonts/images sometimes resolve only on the second run.
-      await htmlToImage.toBlob(node, { pixelRatio: 2, cacheBust: true });
-      const blob = await htmlToImage.toBlob(node, { pixelRatio: 2, cacheBust: true });
+      // The rasterised clone can't see the page's web fonts (the Google Fonts
+      // stylesheet is cross-origin), so it would fall back to wider system
+      // fonts and the layout would reflow. Fetch the real @font-face CSS and
+      // hand it to html-to-image so it inlines the actual fonts.
+      const fontEmbedCSS = await getEmbeddedFontCss();
+      if (document.fonts?.ready) await document.fonts.ready;
+
+      const { width, height } = node.getBoundingClientRect();
+      const opts = { pixelRatio: 2, cacheBust: true, width, height, fontEmbedCSS };
+      // Two passes: embedded images/fonts sometimes resolve only on the second.
+      await htmlToImage.toBlob(node, opts);
+      const blob = await htmlToImage.toBlob(node, opts);
       if (!blob) throw new Error("empty image");
       const file = new File([blob], `${filename}.png`, { type: "image/png" });
 
