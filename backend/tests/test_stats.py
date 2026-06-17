@@ -136,6 +136,18 @@ def test_player_profile(dataset):
     assert cum == sorted(cum)
 
 
+def test_best_game_uses_goals_plus_assists(dataset):
+    # Best game is the highest goals + assists, not goals alone.
+    prof = stats.player_profile(dataset, "lucas volcov")
+    best = prof["best_game"]
+    best_ga = best["goals"] + best["assists"]
+    assert best_ga == max(g["goals"] + g["assists"] for g in prof["game_log"])
+    # Ties break toward more goals.
+    assert best["goals"] == max(
+        g["goals"] for g in prof["game_log"] if g["goals"] + g["assists"] == best_ga
+    )
+
+
 def test_player_profile_unknown(dataset):
     assert stats.player_profile(dataset, "not-a-real-player") is None
 

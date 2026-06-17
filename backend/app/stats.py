@@ -505,7 +505,8 @@ def player_profile(ds: Dataset, name: str) -> dict | None:
     sr = scoring_rate(ds)["ranking"]
     rate_rank = next((p["rank"] for p in sr if p["player"] == name), None)
 
-    best_goals_game = max(rows, key=lambda r: r.goals)
+    # Best game = most goals + assists; ties broken toward more goals.
+    best_game = max(rows, key=lambda r: (r.goals + r.assists, r.goals))
     recent = sorted(_regular(rows), key=lambda r: r.date)[-FORM_WINDOW:]
     total_sessions = len(_sessions(ds))
     return {
@@ -519,9 +520,9 @@ def player_profile(ds: Dataset, name: str) -> dict | None:
         "timeline": timeline,
         "game_log": list(reversed(game_log)),
         "best_game": {
-            "date": best_goals_game.date.isoformat(),
-            "goals": best_goals_game.goals,
-            "assists": best_goals_game.assists,
+            "date": best_game.date.isoformat(),
+            "goals": best_game.goals,
+            "assists": best_game.assists,
         },
         "form": [_result_letter(r) for r in recent],
         "form_dates": [r.date.isoformat() for r in recent],
