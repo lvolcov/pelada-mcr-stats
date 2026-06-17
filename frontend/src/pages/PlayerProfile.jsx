@@ -152,9 +152,12 @@ export default function PlayerProfile() {
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
           <StatCard label={t("common.goals")} value={data.goals} icon="⚽" accent />
           <StatCard label={t("common.assists")} value={data.assists} icon="🅰️" />
-          <div className="hidden lg:block">
-            <StatCard label={t("common.winPct")} value={`${data.win_pct}%`} icon="📈" />
-          </div>
+          <StatCard
+            className="hidden lg:block"
+            label={t("common.winPct")}
+            value={`${data.win_pct}%`}
+            icon="📈"
+          />
           <StatCard
             label={`${t("common.goals")}/${t("common.games").toLowerCase()}`}
             value={data.goals_per_game}

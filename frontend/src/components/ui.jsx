@@ -161,9 +161,9 @@ export function FormPills({ form, dates, scores }) {
   );
 }
 
-export function StatCard({ label, value, sub, icon, accent }) {
+export function StatCard({ label, value, sub, icon, accent, className = "" }) {
   return (
-    <div className="card animate-fade-in p-5">
+    <div className={`card animate-fade-in p-5 ${className}`}>
       <div className="flex items-start justify-between">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
         {icon && <span className="text-xl">{icon}</span>}
