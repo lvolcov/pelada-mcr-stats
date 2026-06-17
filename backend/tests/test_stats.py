@@ -128,6 +128,9 @@ def test_player_profile(dataset):
     # Timeline/game log include every appearance (regular + mixed).
     assert len(prof["timeline"]) == prof["games"] + prof["mixed_games"]
     assert prof["is_mensalista"] is False
+    # Attendance: played 14 of 18 regular sessions.
+    assert prof["total_sessions"] == 18
+    assert prof["attendance_pct"] == round(100 * 14 / 18, 1)
     # Cumulative goals are monotonically non-decreasing.
     cum = [t["cum_goals"] for t in prof["timeline"]]
     assert cum == sorted(cum)

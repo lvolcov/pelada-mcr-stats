@@ -75,7 +75,8 @@ export default function PlayerProfile() {
           </h1>
           <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500 sm:justify-start">
             <span>
-              {data.games} {t("profile.gamesPlayed").toLowerCase()}
+              {t("profile.attended")} {data.games}/{data.total_sessions}{" "}
+              {t("common.sessions").toLowerCase()} ({data.attendance_pct}%)
             </span>
             {data.goals_rank && (
               <span>
@@ -95,7 +96,7 @@ export default function PlayerProfile() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
         <StatCard label={t("common.goals")} value={data.goals} icon="⚽" accent />
         <StatCard label={t("common.assists")} value={data.assists} icon="🅰️" />
         <StatCard label={t("common.winPct")} value={`${data.win_pct}%`} icon="📈" />
@@ -103,6 +104,12 @@ export default function PlayerProfile() {
           label={`${t("common.goals")}/${t("common.games").toLowerCase()}`}
           value={data.goals_per_game}
           icon="🎯"
+        />
+        <StatCard
+          label={t("profile.attendance")}
+          value={`${data.games}/${data.total_sessions}`}
+          sub={`${data.attendance_pct}%`}
+          icon="📅"
         />
       </div>
 

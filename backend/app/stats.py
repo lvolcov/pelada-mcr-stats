@@ -507,10 +507,13 @@ def player_profile(ds: Dataset, name: str) -> dict | None:
 
     best_goals_game = max(rows, key=lambda r: r.goals)
     recent = sorted(_regular(rows), key=lambda r: r.date)[-FORM_WINDOW:]
+    total_sessions = len(_sessions(ds))
     return {
         **totals,
         "is_mensalista": name in ds.mensalistas,
         "mensalista_since": ds.mensalistas.get(name),
+        "total_sessions": total_sessions,
+        "attendance_pct": _pct(totals["games"], total_sessions),
         "goals_rank": goals_rank,
         "scoring_rate_rank": rate_rank,
         "timeline": timeline,

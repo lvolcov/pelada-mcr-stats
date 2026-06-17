@@ -163,4 +163,11 @@ test.describe("Dashboard flows", () => {
     await expect(heading).toBeVisible();
     await expect(heading.getByText("📅")).toBeVisible();
   });
+
+  test("player profile shows attendance x/y", async ({ page }) => {
+    await page.goto("/player/lucas%20volcov");
+    await expect(page.getByRole("heading", { name: /Lucas Volcov/ })).toBeVisible();
+    // Attendance ratio (14/18) appears on the profile.
+    await expect(page.getByText("14/18").first()).toBeVisible();
+  });
 });
