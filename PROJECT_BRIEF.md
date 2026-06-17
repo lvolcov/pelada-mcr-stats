@@ -4,6 +4,10 @@
 > documentation** of the built system (architecture, hosting, data model, the
 > mixed-match rule, mensalistas, match pages, photos, API and how to update data),
 > see **[README.md](README.md)**.
+>
+> **Companion app:** [Bolão da Copa](https://lvolcov.github.io/bolao-da-copa/)
+> ([repo](https://github.com/lvolcov/bolao-da-copa)) — a separate, decoupled World
+> Cup prediction pool, linked from the sidebar. See its own README for setup.
 
 ## Goal
 

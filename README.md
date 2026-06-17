@@ -77,6 +77,9 @@ columns `date,score,player,goals,assists,win,loss,draw,mixed`
   Brazilian Portuguese (English strings retained internally).
 - **Dark / light theme** — persisted, dark by default.
 - **Mobile-first** — responsive sidebar on desktop, slide-over drawer on mobile.
+- **Bolão da Copa link** — the sidebar links to the companion
+  [World Cup prediction pool](https://lvolcov.github.io/bolao-da-copa/), a
+  separate, decoupled app ([repo](https://github.com/lvolcov/bolao-da-copa)).
 
 ---
 
