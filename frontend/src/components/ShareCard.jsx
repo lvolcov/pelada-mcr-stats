@@ -377,21 +377,36 @@ export function ShareOverlay({ onClose, label, filename, shareTitle, saveLabel, 
       if (!blob) throw new Error("empty image");
       const file = new File([blob], `${filename}.png`, { type: "image/png" });
 
-      // Native share sheet (mobile) → WhatsApp etc.; fall back to a download.
-      if (navigator.canShare?.({ files: [file] })) {
+      // Deep link back to this exact match/player page so the share carries a
+      // link to the tool alongside the image.
+      const link = window.location.href;
+      const text = `${shareTitle}\n${link}`;
+
+      // Native share sheet (mobile) → WhatsApp etc. Include the image + link;
+      // prefer sharing files+text, but degrade gracefully if a target/browser
+      // rejects the combination. Fall back to a plain download on desktop.
+      const attempts = [
+        { files: [file], text, url: link, title: shareTitle },
+        { files: [file], title: shareTitle }, // image only (some apps drop text)
+        { text, url: link, title: shareTitle }, // link only, no image
+      ];
+      for (const data of attempts) {
+        if (!navigator.canShare?.(data)) continue;
         try {
-          await navigator.share({ files: [file], title: shareTitle });
+          await navigator.share(data);
           return;
         } catch (err) {
-          if (err?.name === "AbortError") return; // user dismissed
+          if (err?.name === "AbortError") return; // user dismissed the sheet
+          // otherwise try the next, simpler payload
         }
       }
-      const url = URL.createObjectURL(blob);
+
+      const objUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
+      a.href = objUrl;
       a.download = file.name;
       a.click();
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(objUrl);
     } catch (err) {
       console.error("Share image failed:", err);
     } finally {
