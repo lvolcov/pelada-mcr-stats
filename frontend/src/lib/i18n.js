@@ -5,7 +5,7 @@ export const LANGS = ["pt", "en"];
 export const dict = {
   pt: {
     appName: "Pelada MCR",
-    appTagline: "A pelada brasileira em Manchester 🇧🇷🐝",
+    appTagline: "A melhor pelada brasileira em Manchester 🇧🇷🐝",
     nav: {
       home: "Início",
       leaderboard: "Placar Geral",
