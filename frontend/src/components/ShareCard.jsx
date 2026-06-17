@@ -385,10 +385,12 @@ export function ShareOverlay({ onClose, label, filename, shareTitle, saveLabel, 
       // Native share sheet (mobile) → WhatsApp etc. Include the image + link;
       // prefer sharing files+text, but degrade gracefully if a target/browser
       // rejects the combination. Fall back to a plain download on desktop.
+      // The link lives in `text` only — passing `url` as well makes some apps
+      // paste the link twice.
       const attempts = [
-        { files: [file], text, url: link, title: shareTitle },
+        { files: [file], text, title: shareTitle },
         { files: [file], title: shareTitle }, // image only (some apps drop text)
-        { text, url: link, title: shareTitle }, // link only, no image
+        { text, title: shareTitle }, // link only, no image
       ];
       for (const data of attempts) {
         if (!navigator.canShare?.(data)) continue;
