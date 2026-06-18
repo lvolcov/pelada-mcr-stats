@@ -18,6 +18,7 @@ export const dict = {
       mvp: "MVP por Rodada",
       attendance: "Presença",
       players: "Jogadores",
+      datalab: "Laboratório de Dados",
       bolao: "Bolão da Copa",
     },
     common: {
@@ -135,6 +136,33 @@ export const dict = {
       subtitle: "Quem comparece com mais frequência.",
       attended: "Presenças",
     },
+    datalab: {
+      title: "Laboratório de Dados",
+      subtitle:
+        "Experimentos com os números da pelada. Como os times são montados pelos admins para ficarem equilibrados, o esperado para todo mundo é ~50% — a graça é ver quem foge disso quando joga junto.",
+      duos: "Duplas",
+      trios: "Trios",
+      duosTitle: "Duplas que mais vencem juntas",
+      triosTitle: "Trios que mais vencem juntos",
+      together: "Jogos juntos",
+      raw: "% Bruta",
+      adjusted: "% Ajustada",
+      minTogether: "Mínimo de jogos juntos",
+      sortedBy: "Ordenado pela % ajustada",
+      empty: "Nenhuma combinação com tantos jogos juntos. Reduza o filtro.",
+      decided: "rodadas com vencedor",
+      of: "de",
+      best: "Melhor sinergia",
+      worst: "Pior sinergia",
+      sampleNote:
+        "Só por diversão — a amostra ainda é pequena. A % ajustada puxa as duplas/trios de poucos jogos para perto de 50%, então uma sorte de 3 jogos não lidera o ranking. A confiança cresce conforme mais rodadas são registradas.",
+      methodTitle: "Como é calculado",
+      method1:
+        "Os times de cada rodada são reconstruídos pelos vencedores x perdedores. Empates e dias de time misto ficam de fora (não têm dois times claros).",
+      method2:
+        "% Ajustada = (vitórias + {half}) ÷ (jogos + {k}) — uma regressão para 50% que evita que amostras minúsculas dominem.",
+      explore: "Explorar mais ideias",
+    },
     profile: {
       gamesPlayed: "Jogos",
       goalsRank: "no ranking de gols",
@@ -171,6 +199,7 @@ export const dict = {
       mvp: "Match MVP",
       attendance: "Attendance",
       players: "Players",
+      datalab: "Data Lab",
       bolao: "World Cup Pool",
     },
     common: {
@@ -287,6 +316,33 @@ export const dict = {
       title: "Attendance",
       subtitle: "Who shows up most often.",
       attended: "Attended",
+    },
+    datalab: {
+      title: "Data Lab",
+      subtitle:
+        "Experiments with the pelada's numbers. Since the admins hand-balance the teams, ~50% is everyone's baseline — the fun is spotting who drifts from it when they play together.",
+      duos: "Duos",
+      trios: "Trios",
+      duosTitle: "Duos that win most together",
+      triosTitle: "Trios that win most together",
+      together: "Games together",
+      raw: "Raw %",
+      adjusted: "Adjusted %",
+      minTogether: "Minimum games together",
+      sortedBy: "Sorted by adjusted %",
+      empty: "No combo with that many shared games. Lower the filter.",
+      decided: "decided sessions",
+      of: "of",
+      best: "Best synergy",
+      worst: "Worst synergy",
+      sampleNote:
+        "Just for fun — the sample is still small. The adjusted % pulls low-game duos/trios toward 50%, so a 3-game fluke won't top the chart. It gets more trustworthy as more sessions are logged.",
+      methodTitle: "How it's calculated",
+      method1:
+        "Each session's teams are rebuilt from winners vs losers. Draws and mixed-team days are excluded (no clean two-team split).",
+      method2:
+        "Adjusted % = (wins + {half}) ÷ (games + {k}) — a regression toward 50% so tiny samples don't dominate.",
+      explore: "Explore more ideas",
     },
     profile: {
       gamesPlayed: "Games",

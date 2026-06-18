@@ -38,6 +38,7 @@ export const api = {
   match: (date) => get(`/matches/${encodeURIComponent(date)}`),
   mvp: () => get("/mvp"),
   attendance: () => get("/attendance"),
+  synergy: () => get("/synergy"),
   mensalistas: () => get("/mensalistas"),
   players: () => get("/players"),
   player: (name) => get(`/players/${encodeURIComponent(name)}`),

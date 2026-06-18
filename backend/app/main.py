@@ -120,6 +120,11 @@ def get_attendance():
     return stats.attendance(_ds())
 
 
+@app.get("/api/synergy")
+def get_synergy():
+    return stats.synergy(_ds())
+
+
 @app.get("/api/players")
 def get_players():
     return stats.players_index(_ds())

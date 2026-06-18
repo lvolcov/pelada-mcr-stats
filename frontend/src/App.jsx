@@ -13,6 +13,7 @@ import Mvp from "./pages/Mvp";
 import Attendance from "./pages/Attendance";
 import Players from "./pages/Players";
 import PlayerProfile from "./pages/PlayerProfile";
+import DataLab from "./pages/DataLab";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/players" element={<Players />} />
         <Route path="/player/:name" element={<PlayerProfile />} />
+        <Route path="/datalab" element={<DataLab />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>

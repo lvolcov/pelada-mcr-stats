@@ -26,6 +26,10 @@ RATE_MIN_GAMES = 5
 WINRATE_ELIGIBILITY = 0.60
 # Window size for the "recent form" strip.
 FORM_WINDOW = 5
+# Synergy "lab": shrinkage strength (phantom .500 games pulling small samples
+# toward 50%) and the default minimum shared games shown in the dashboard.
+SYNERGY_K = 6
+SYNERGY_MIN_GAMES = 4
 
 
 def display_name(name: str) -> str:
@@ -544,3 +548,81 @@ def players_index(ds: Dataset) -> list[dict]:
         }
         for p in totals
     ]
+
+
+# --------------------------------------------------------------------------- #
+# Synergy lab — how often groups of players win when on the SAME team
+# --------------------------------------------------------------------------- #
+
+def _shrunk_win_pct(wins: int, games: int, k: int = SYNERGY_K) -> float:
+    """Win% regressed toward 50% by ``k`` phantom .500 games.
+
+    Keeps a 3-game fluke from topping the chart: tiny samples sit near 50%,
+    and the estimate only departs from it as real games accumulate.
+    """
+    return round(100 * (wins + k * 0.5) / (games + k), 1)
+
+
+def synergy(ds: Dataset) -> dict:
+    """Win rates of duos and trios that share a side.
+
+    Teams are reconstructed per session from the win/loss flags (winners are one
+    team, losers the other). Mixed-team days and draws have no clean two-team
+    split, so they're skipped. Because the admins hand-balance the sides each
+    week, ~50% is everyone's baseline — the fun is who drifts from it.
+    """
+    from itertools import combinations
+
+    by_date = _rows_by_date(ds)
+    pair: dict[tuple[str, str], list[int]] = defaultdict(lambda: [0, 0])  # [games, wins]
+    trio: dict[tuple[str, str, str], list[int]] = defaultdict(lambda: [0, 0])
+    decided = 0
+
+    for rows in by_date.values():
+        if any(r.mixed for r in rows):
+            continue
+        winners = sorted(r.player for r in rows if r.win)
+        losers = sorted(r.player for r in rows if r.loss)
+        if not winners or not losers:  # draw / unrecorded teams
+            continue
+        decided += 1
+        for team, won in ((winners, 1), (losers, 0)):
+            for a, b in combinations(team, 2):
+                agg = pair[(a, b)]
+                agg[0] += 1
+                agg[1] += won
+            for a, b, c in combinations(team, 3):
+                agg = trio[(a, b, c)]
+                agg[0] += 1
+                agg[1] += won
+
+    def pack(store: dict) -> list[dict]:
+        out = []
+        for names, (games, wins) in store.items():
+            out.append(
+                {
+                    "players": [
+                        {"player": n, "name": display_name(n)} for n in names
+                    ],
+                    "label": " + ".join(display_name(n) for n in names),
+                    "games": games,
+                    "wins": wins,
+                    "win_pct": _pct(wins, games),
+                    "adj_pct": _shrunk_win_pct(wins, games),
+                }
+            )
+        # Default order: most-trustworthy synergy first (adjusted, then sample).
+        out.sort(key=lambda r: (r["adj_pct"], r["games"]), reverse=True)
+        return out
+
+    pairs = pack(pair)
+    trios = pack(trio)
+    return {
+        "decided_days": decided,
+        "total_days": len(by_date),
+        "k": SYNERGY_K,
+        "min_games": SYNERGY_MIN_GAMES,
+        "max_together": max((p["games"] for p in pairs), default=0),
+        "pairs": pairs,
+        "trios": trios,
+    }

@@ -17,6 +17,7 @@ const NAV = [
   { to: "/mvp", key: "mvp", icon: "⭐" },
   { to: "/attendance", key: "attendance", icon: "✅" },
   { to: "/players", key: "players", icon: "👥" },
+  { to: "/datalab", key: "datalab", icon: "🧪" },
 ];
 
 function Brand() {

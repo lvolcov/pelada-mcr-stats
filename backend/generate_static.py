@@ -58,6 +58,7 @@ def main() -> None:
         "attendance": stats.attendance(ds),
         "players": stats.players_index(ds),
         "mensalistas": stats.mensalistas_report(ds),
+        "synergy": stats.synergy(ds),
     }
     for name, payload in endpoints.items():
         write_json(out / f"{name}.json", payload)
