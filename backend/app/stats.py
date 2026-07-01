@@ -304,6 +304,7 @@ def _match_players(rows: list[MatchRow]) -> list[dict]:
             "goals": r.goals,
             "assists": r.assists,
             "result": _result_letter(r),
+            "sub": bool(r.sub),
         }
         for r in rows
     ]
@@ -345,10 +346,14 @@ def match_detail(ds: Dataset, date_iso: str) -> dict | None:
     mixed = bool(rows[0].mixed) or "x" not in rows[0].score
     players = _match_players(rows)
 
-    # Sides come straight from each player's win/loss flag (no team column exists,
-    # so draws and mixed days can't be split into two teams).
+    # Sides come from each player's win/loss flag. Draws (and other days where
+    # the result doesn't split the room) instead carry an explicit team label in
+    # the `team` column — that's what lets a drawn game still show two teams.
     winners = _match_players([r for r in rows if r.win])
     losers = _match_players([r for r in rows if r.loss])
+    team1 = _match_players([r for r in rows if r.team == "1"])
+    team2 = _match_players([r for r in rows if r.team == "2"])
+    named_teams = bool(team1) and bool(team2)
     is_draw = (not mixed) and all(r.draw for r in rows) and not winners and not losers
     teams_known = bool(winners) and bool(losers)
 
@@ -363,6 +368,9 @@ def match_detail(ds: Dataset, date_iso: str) -> dict | None:
         "mixed": mixed,
         "is_draw": is_draw,
         "teams_known": teams_known,
+        "named_teams": named_teams,
+        "team1": team1,
+        "team2": team2,
         "player_count": len(rows),
         "total_player_goals": sum(r.goals for r in rows),
         "total_player_assists": sum(r.assists for r in rows),

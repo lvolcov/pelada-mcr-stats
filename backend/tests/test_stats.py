@@ -159,3 +159,56 @@ def test_mvp_tally_matches_sessions(dataset):
     total_mvps = sum(p["mvp_count"] for p in mv["season"])
     sessions_with_mvp = sum(1 for s in mv["per_session"] if s["mvp"])
     assert total_mvps == sessions_with_mvp
+
+
+# --- team labels + substitutes (draws keep their two sides) ------------------
+
+_TEAMS_CSV = (
+    "date,score,player,goals,assists,win,loss,draw,mixed,team,sub\n"
+    "2026-07-01,5 x 5,a,2,0,0,0,1,0,1,0\n"
+    "2026-07-01,5 x 5,b,0,1,0,0,1,0,1,0\n"
+    "2026-07-01,5 x 5,c,0,0,0,0,1,0,1,1\n"  # substitute on team 1
+    "2026-07-01,5 x 5,d,3,0,0,0,1,0,2,0\n"
+    "2026-07-01,5 x 5,e,0,0,0,0,1,0,2,0\n"
+    # A separate plain draw with no team labels (backwards-compat path).
+    "2026-06-01,2 x 2,a,1,0,0,0,1,0,,\n"
+    "2026-06-01,2 x 2,b,1,0,0,0,1,0,,\n"
+)
+
+
+def _teams_dataset(tmp_path):
+    from app.parser import DataStore
+
+    csv_path = tmp_path / "m.csv"
+    csv_path.write_text(_TEAMS_CSV, encoding="utf-8")
+    (tmp_path / "players.csv").write_text(
+        "player\na\nb\nc\nd\ne\n", encoding="utf-8"
+    )
+    return DataStore(str(csv_path)).get()
+
+
+def test_named_teams_split_on_draw(tmp_path):
+    ds = _teams_dataset(tmp_path)
+    md = stats.match_detail(ds, "2026-07-01")
+    assert md["is_draw"] is True
+    assert md["teams_known"] is False  # no W/L to split on
+    assert md["named_teams"] is True
+    assert {p["player"] for p in md["team1"]} == {"a", "b", "c"}
+    assert {p["player"] for p in md["team2"]} == {"d", "e"}
+
+
+def test_substitute_flag_exposed(tmp_path):
+    ds = _teams_dataset(tmp_path)
+    md = stats.match_detail(ds, "2026-07-01")
+    subs = {p["player"] for p in md["team1"] if p["sub"]}
+    assert subs == {"c"}
+    # Substitutes still count in the session totals.
+    assert md["player_count"] == 5
+
+
+def test_plain_draw_without_teams_stays_unsplit(tmp_path):
+    ds = _teams_dataset(tmp_path)
+    md = stats.match_detail(ds, "2026-06-01")
+    assert md["is_draw"] is True
+    assert md["named_teams"] is False
+    assert md["team1"] == [] and md["team2"] == []

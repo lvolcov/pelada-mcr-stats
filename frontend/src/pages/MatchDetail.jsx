@@ -40,9 +40,17 @@ function MatchPhoto({ date }) {
 }
 
 function PlayerRow({ p }) {
+  const { t } = useApp();
   return (
     <li className="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-      <PlayerCell name={p.name} player={p.player} />
+      <span className="flex min-w-0 items-center gap-1.5">
+        <PlayerCell name={p.name} player={p.player} />
+        {p.sub && (
+          <span className="pill shrink-0 bg-slate-200 text-[0.6rem] text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+            {t("match.sub")}
+          </span>
+        )}
+      </span>
       <div className="flex items-center gap-3 text-sm tabular-nums text-slate-500">
         {p.goals > 0 && <span>⚽ {p.goals}</span>}
         {p.assists > 0 && <span>🅰️ {p.assists}</span>}
@@ -240,6 +248,24 @@ export default function MatchDetail() {
                 accent="text-rose-500"
                 players={data.losers}
               />
+            </div>
+          ) : data.named_teams ? (
+            <div>
+              {data.is_draw && (
+                <p className="mb-3 text-xs text-slate-400">{t("match.draw")}</p>
+              )}
+              <div className="grid gap-6 sm:grid-cols-2">
+                <TeamColumn
+                  title={t("match.team1")}
+                  accent="text-sky-600 dark:text-sky-400"
+                  players={data.team1}
+                />
+                <TeamColumn
+                  title={t("match.team2")}
+                  accent="text-violet-600 dark:text-violet-400"
+                  players={data.team2}
+                />
+              </div>
             </div>
           ) : (
             <div>

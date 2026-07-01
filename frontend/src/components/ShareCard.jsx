@@ -33,7 +33,7 @@ function StatPair({ goals, assists }) {
   );
 }
 
-function PlayerList({ players, accentClass }) {
+function PlayerList({ players, accentClass, subLabel }) {
   return (
     <ul className="space-y-[3px]">
       {players.map((p) => (
@@ -41,6 +41,11 @@ function PlayerList({ players, accentClass }) {
           <span className="flex min-w-0 items-baseline gap-1.5">
             <span className={`h-1.5 w-1.5 shrink-0 translate-y-[-1px] rounded-full ${accentClass}`} />
             <span className="truncate text-[0.82rem] font-medium text-white/90">{p.name}</span>
+            {p.sub && subLabel && (
+              <span className="shrink-0 text-[0.55rem] font-semibold uppercase tracking-wide text-white/50">
+                {subLabel}
+              </span>
+            )}
           </span>
           <StatPair goals={p.goals} assists={p.assists} />
         </li>
@@ -64,7 +69,8 @@ export function MatchShareCard({ data, lang, t }) {
   const photoSrc = `${import.meta.env.BASE_URL}photos/${data.date}.jpg`;
   const star = data.mixed ? data.highlight : data.mvp;
 
-  // Split the roster: teams when known, otherwise two balanced columns.
+  // Split the roster: teams when known (winners/losers, or named teams on a
+  // draw), otherwise two balanced columns.
   let left, right, leftLabel, rightLabel, leftAccent, rightAccent;
   if (data.teams_known) {
     left = data.winners;
@@ -73,6 +79,13 @@ export function MatchShareCard({ data, lang, t }) {
     rightLabel = t("match.losers");
     leftAccent = "bg-pitch-300";
     rightAccent = "bg-rose-400";
+  } else if (data.named_teams) {
+    left = data.team1;
+    right = data.team2;
+    leftLabel = t("match.team1");
+    rightLabel = t("match.team2");
+    leftAccent = "bg-sky-300";
+    rightAccent = "bg-violet-300";
   } else {
     const half = Math.ceil(data.players.length / 2);
     left = data.players.slice(0, half);
@@ -140,13 +153,13 @@ export function MatchShareCard({ data, lang, t }) {
             <h3 className="mb-1.5 font-display text-[0.7rem] font-bold uppercase tracking-widest text-pitch-200">
               {leftLabel} · {left.length}
             </h3>
-            <PlayerList players={left} accentClass={leftAccent} />
+            <PlayerList players={left} accentClass={leftAccent} subLabel={t("match.sub")} />
           </div>
           <div className="min-w-0">
             <h3 className="mb-1.5 font-display text-[0.7rem] font-bold uppercase tracking-widest text-rose-200">
               {rightLabel}{right.length ? ` · ${right.length}` : ""}
             </h3>
-            <PlayerList players={right} accentClass={rightAccent} />
+            <PlayerList players={right} accentClass={rightAccent} subLabel={t("match.sub")} />
           </div>
         </div>
 

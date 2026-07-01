@@ -40,6 +40,8 @@ class MatchRow:
     loss: int
     draw: int
     mixed: int  # "Time misto" — teams were reshuffled (3-team day)
+    team: str = ""  # "1"/"2" side label (optional; lets draws keep their teams)
+    sub: int = 0    # 1 if the player came on as a substitute that session
 
 
 @dataclass
@@ -62,6 +64,12 @@ def _to_int(value) -> int:
         return int(float(value))
     except (TypeError, ValueError):
         return 0
+
+
+def _norm_team(value) -> str:
+    """Normalise a team label to '1'/'2', or '' when absent/unrecognised."""
+    s = str(value).strip() if value is not None else ""
+    return s if s in ("1", "2") else ""
 
 
 def _to_date(value) -> date | None:
@@ -178,6 +186,8 @@ class DataStore:
                         loss=_to_int(r.get("loss")),
                         draw=_to_int(r.get("draw")),
                         mixed=_to_int(r.get("mixed")),
+                        team=_norm_team(r.get("team")),
+                        sub=_to_int(r.get("sub")),
                     )
                 )
 
