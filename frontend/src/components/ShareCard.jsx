@@ -33,7 +33,7 @@ function StatPair({ goals, assists }) {
   );
 }
 
-function PlayerList({ players, accentClass, subLabel }) {
+function PlayerList({ players, accentClass }) {
   return (
     <ul className="space-y-[3px]">
       {players.map((p) => (
@@ -41,11 +41,6 @@ function PlayerList({ players, accentClass, subLabel }) {
           <span className="flex min-w-0 items-baseline gap-1.5">
             <span className={`h-1.5 w-1.5 shrink-0 translate-y-[-1px] rounded-full ${accentClass}`} />
             <span className="truncate text-[0.82rem] font-medium text-white/90">{p.name}</span>
-            {p.sub && subLabel && (
-              <span className="shrink-0 text-[0.55rem] font-semibold uppercase tracking-wide text-white/50">
-                {subLabel}
-              </span>
-            )}
           </span>
           <StatPair goals={p.goals} assists={p.assists} />
         </li>
@@ -153,15 +148,29 @@ export function MatchShareCard({ data, lang, t }) {
             <h3 className="mb-1.5 font-display text-[0.7rem] font-bold uppercase tracking-widest text-pitch-200">
               {leftLabel} · {left.length}
             </h3>
-            <PlayerList players={left} accentClass={leftAccent} subLabel={t("match.sub")} />
+            <PlayerList players={left} accentClass={leftAccent} />
           </div>
           <div className="min-w-0">
             <h3 className="mb-1.5 font-display text-[0.7rem] font-bold uppercase tracking-widest text-rose-200">
               {rightLabel}{right.length ? ` · ${right.length}` : ""}
             </h3>
-            <PlayerList players={right} accentClass={rightAccent} subLabel={t("match.sub")} />
+            <PlayerList players={right} accentClass={rightAccent} />
           </div>
         </div>
+
+        {/* Substitutions */}
+        {data.subs?.length > 0 && (
+          <div className="shrink-0 space-y-0.5 px-5">
+            {data.subs.map((s) => (
+              <p key={`${s.in_player}-${s.out_player}`} className="flex items-center gap-1.5 text-[0.7rem] text-white/70">
+                <span className="text-pitch-300">⇄</span>
+                <span className="font-medium text-white/90">{s.in}</span>
+                <span className="text-white/50">{t("match.subFor")}</span>
+                <span>{s.out}</span>
+              </p>
+            ))}
+          </div>
+        )}
 
         {/* MVP highlight */}
         {star && (

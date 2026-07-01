@@ -40,8 +40,8 @@ class MatchRow:
     loss: int
     draw: int
     mixed: int  # "Time misto" — teams were reshuffled (3-team day)
-    team: str = ""  # "1"/"2" side label (optional; lets draws keep their teams)
-    sub: int = 0    # 1 if the player came on as a substitute that session
+    team: str = ""      # "1"/"2" side label (optional; lets draws keep their teams)
+    sub_for: str = ""   # name of the player this one came on for (a substitution)
 
 
 @dataclass
@@ -187,7 +187,7 @@ class DataStore:
                         draw=_to_int(r.get("draw")),
                         mixed=_to_int(r.get("mixed")),
                         team=_norm_team(r.get("team")),
-                        sub=_to_int(r.get("sub")),
+                        sub_for=str(r.get("sub_for") or "").strip().lower(),
                     )
                 )
 

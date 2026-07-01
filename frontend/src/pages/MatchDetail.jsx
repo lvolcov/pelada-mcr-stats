@@ -40,22 +40,48 @@ function MatchPhoto({ date }) {
 }
 
 function PlayerRow({ p }) {
-  const { t } = useApp();
   return (
     <li className="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-      <span className="flex min-w-0 items-center gap-1.5">
-        <PlayerCell name={p.name} player={p.player} />
-        {p.sub && (
-          <span className="pill shrink-0 bg-slate-200 text-[0.6rem] text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-            {t("match.sub")}
-          </span>
-        )}
-      </span>
+      <PlayerCell name={p.name} player={p.player} />
       <div className="flex items-center gap-3 text-sm tabular-nums text-slate-500">
         {p.goals > 0 && <span>⚽ {p.goals}</span>}
         {p.assists > 0 && <span>🅰️ {p.assists}</span>}
       </div>
     </li>
+  );
+}
+
+// Substitution swap arrows (green in / red out), mirroring a match-sheet look.
+function SwapIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0" aria-hidden="true">
+      <path d="M4 8h11l-3-3M4 8l3 3" className="stroke-pitch-500" />
+      <path d="M20 16H9l3 3M20 16l-3-3" className="stroke-rose-500" />
+    </svg>
+  );
+}
+
+function Substitutions({ subs }) {
+  const { t } = useApp();
+  return (
+    <Section title={t("match.substitutions")}>
+      <ul className="space-y-2">
+        {subs.map((s) => (
+          <li key={`${s.in_player}-${s.out_player}`} className="flex items-center gap-2.5 text-sm">
+            <SwapIcon />
+            <span>
+              <Link to={`/player/${s.in_player}`} className="font-medium hover:text-pitch-600">
+                {s.in}
+              </Link>
+              <span className="text-slate-400"> {t("match.subFor")} </span>
+              <Link to={`/player/${s.out_player}`} className="text-slate-500 hover:text-pitch-600">
+                {s.out}
+              </Link>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 }
 
@@ -301,6 +327,7 @@ export default function MatchDetail() {
               </Link>
             </Section>
           )}
+          {data.subs?.length > 0 && <Substitutions subs={data.subs} />}
           <MatchPhoto date={data.date} />
         </div>
       </div>

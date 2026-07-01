@@ -304,7 +304,7 @@ def _match_players(rows: list[MatchRow]) -> list[dict]:
             "goals": r.goals,
             "assists": r.assists,
             "result": _result_letter(r),
-            "sub": bool(r.sub),
+            "sub_for": r.sub_for,
         }
         for r in rows
     ]
@@ -354,6 +354,18 @@ def match_detail(ds: Dataset, date_iso: str) -> dict | None:
     team1 = _match_players([r for r in rows if r.team == "1"])
     team2 = _match_players([r for r in rows if r.team == "2"])
     named_teams = bool(team1) and bool(team2)
+
+    # Substitutions: each player carrying a `sub_for` came on for that player.
+    subs = [
+        {
+            "in_player": r.player,
+            "in": display_name(r.player),
+            "out_player": r.sub_for,
+            "out": display_name(r.sub_for),
+        }
+        for r in rows
+        if r.sub_for
+    ]
     is_draw = (not mixed) and all(r.draw for r in rows) and not winners and not losers
     teams_known = bool(winners) and bool(losers)
 
@@ -371,6 +383,7 @@ def match_detail(ds: Dataset, date_iso: str) -> dict | None:
         "named_teams": named_teams,
         "team1": team1,
         "team2": team2,
+        "subs": subs,
         "player_count": len(rows),
         "total_player_goals": sum(r.goals for r in rows),
         "total_player_assists": sum(r.assists for r in rows),

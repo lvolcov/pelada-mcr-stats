@@ -164,12 +164,12 @@ def test_mvp_tally_matches_sessions(dataset):
 # --- team labels + substitutes (draws keep their two sides) ------------------
 
 _TEAMS_CSV = (
-    "date,score,player,goals,assists,win,loss,draw,mixed,team,sub\n"
-    "2026-07-01,5 x 5,a,2,0,0,0,1,0,1,0\n"
-    "2026-07-01,5 x 5,b,0,1,0,0,1,0,1,0\n"
-    "2026-07-01,5 x 5,c,0,0,0,0,1,0,1,1\n"  # substitute on team 1
-    "2026-07-01,5 x 5,d,3,0,0,0,1,0,2,0\n"
-    "2026-07-01,5 x 5,e,0,0,0,0,1,0,2,0\n"
+    "date,score,player,goals,assists,win,loss,draw,mixed,team,sub_for\n"
+    "2026-07-01,5 x 5,a,2,0,0,0,1,0,1,\n"
+    "2026-07-01,5 x 5,b,0,1,0,0,1,0,1,\n"
+    "2026-07-01,5 x 5,c,0,0,0,0,1,0,1,b\n"  # c came on for b (team 1)
+    "2026-07-01,5 x 5,d,3,0,0,0,1,0,2,\n"
+    "2026-07-01,5 x 5,e,0,0,0,0,1,0,2,\n"
     # A separate plain draw with no team labels (backwards-compat path).
     "2026-06-01,2 x 2,a,1,0,0,0,1,0,,\n"
     "2026-06-01,2 x 2,b,1,0,0,0,1,0,,\n"
@@ -197,13 +197,15 @@ def test_named_teams_split_on_draw(tmp_path):
     assert {p["player"] for p in md["team2"]} == {"d", "e"}
 
 
-def test_substitute_flag_exposed(tmp_path):
+def test_substitution_recorded(tmp_path):
     ds = _teams_dataset(tmp_path)
     md = stats.match_detail(ds, "2026-07-01")
-    subs = {p["player"] for p in md["team1"] if p["sub"]}
-    assert subs == {"c"}
+    assert len(md["subs"]) == 1
+    sub = md["subs"][0]
+    assert sub["in_player"] == "c" and sub["out_player"] == "b"
     # Substitutes still count in the session totals.
     assert md["player_count"] == 5
+    assert any(p["player"] == "c" for p in md["team1"])
 
 
 def test_plain_draw_without_teams_stays_unsplit(tmp_path):
