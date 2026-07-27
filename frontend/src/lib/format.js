@@ -31,6 +31,16 @@ export function formatDateShort(iso, lang) {
   });
 }
 
+// Normalise a display name into the photo-file slug: lowercase, strip accents.
+// e.g. "Carlão" -> "carlao". A player has a photo if public/players/<slug>.jpg exists.
+export function playerSlug(name) {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 export function initials(name) {
   return name
     .split(" ")

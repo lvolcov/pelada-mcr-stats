@@ -1,8 +1,9 @@
 // Reusable presentational primitives shared across dashboards.
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { avatarColor, initials, medal, formatDate } from "../lib/format";
+import { avatarColor, initials, medal, formatDate, playerSlug } from "../lib/format";
 
 // The brand logo (transparent PNG). Use <Logo> directly on light/coloured
 // surfaces; <LogoBadge> wraps it in a white chip so the black linework stays
@@ -77,7 +78,11 @@ export function Avatar({ name, size = "md", to }) {
     lg: "h-16 w-16 text-xl",
     xl: "h-24 w-24 text-3xl",
   };
-  const inner = (
+  // Try a real photo at public/players/<slug>.jpg; fall back to coloured
+  // initials if the player has no photo (or it fails to load).
+  const [imgFailed, setImgFailed] = useState(false);
+  const photoSrc = `${import.meta.env.BASE_URL}players/${playerSlug(name)}.jpg`;
+  const inner = imgFailed ? (
     <span
       className={`inline-flex shrink-0 items-center justify-center rounded-full font-bold text-white ring-2 ring-white/20 ${avatarColor(
         name
@@ -85,6 +90,13 @@ export function Avatar({ name, size = "md", to }) {
     >
       {initials(name)}
     </span>
+  ) : (
+    <img
+      src={photoSrc}
+      alt={name}
+      onError={() => setImgFailed(true)}
+      className={`inline-block shrink-0 rounded-full object-cover ring-2 ring-white/20 ${sizes[size]}`}
+    />
   );
   return to ? <Link to={to}>{inner}</Link> : inner;
 }
