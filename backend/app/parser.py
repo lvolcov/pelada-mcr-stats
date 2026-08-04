@@ -87,11 +87,23 @@ def _to_date(value) -> date | None:
 
 
 def _norm_score(value) -> str:
-    """Normalise score text, e.g. '5 X 3 ' -> '5 x 3'."""
+    """Normalise score text, e.g. '5 X 3 ' -> '5 x 3'.
+
+    Also orders it so the higher number (the winner) is always on the left:
+    '4 x 6' -> '6 x 4'. Non-numeric / mixed scores ('3 times') are left as-is.
+    """
     if value is None:
         return ""
     s = str(value).strip()
-    return s.replace(" X ", " x ").replace("X", "x") if any(c.isdigit() for c in s) else s
+    if not any(c.isdigit() for c in s):
+        return s
+    s = s.replace(" X ", " x ").replace("X", "x")
+    parts = [p.strip() for p in s.split("x")]
+    if len(parts) == 2 and all(p.isdigit() for p in parts):
+        a, b = int(parts[0]), int(parts[1])
+        lo, hi = min(a, b), max(a, b)
+        return f"{hi} x {lo}"
+    return s
 
 
 class DataStore:
