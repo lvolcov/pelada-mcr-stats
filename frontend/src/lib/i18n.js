@@ -37,6 +37,7 @@ export const dict = {
       mixed: "Misto",
       rank: "#",
       winPct: "% Vitórias",
+      lossPct: "% Derrotas",
       perGame: "por jogo",
       season: "Temporada",
       sessions: "Rodadas",
@@ -99,6 +100,9 @@ export const dict = {
     leaderboard: { title: "Placar Geral", subtitle: "Ranking geral de todos os jogadores." },
     winrate: {
       title: "Ranking de Vitórias",
+      titleLosses: "Ranking de Derrotas",
+      toggleWins: "Vitórias",
+      toggleLosses: "Derrotas",
       subtitle:
         "Apenas jogadores presentes em pelo menos {pct}% das rodadas ({min} de {total}).",
     },
@@ -222,6 +226,7 @@ export const dict = {
       mixed: "Mixed",
       rank: "#",
       winPct: "Win %",
+      lossPct: "Loss %",
       perGame: "per game",
       season: "Season",
       sessions: "Sessions",
@@ -284,6 +289,9 @@ export const dict = {
     leaderboard: { title: "Leaderboard", subtitle: "Overall ranking of every player." },
     winrate: {
       title: "Win Rate Ranking",
+      titleLosses: "Losses Ranking",
+      toggleWins: "Wins",
+      toggleLosses: "Losses",
       subtitle:
         "Only players present in at least {pct}% of sessions ({min} of {total}).",
     },
